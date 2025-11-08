@@ -1,4 +1,7 @@
-import { Resend } from "resend";
+import {
+  TransactionalEmailsApi,
+  TransactionalEmailsApiApiKeys,
+} from "@getbrevo/brevo";
 import axios from "axios";
 import { config } from "../config/env";
 import { logger } from "../utils/logger";
@@ -6,10 +9,15 @@ import { Notification, User, Debt } from "../models";
 import { formatCurrency } from "../utils/helpers";
 import { getModelData } from "../utils/sequelize-helpers";
 
-const resend = new Resend(config.email.resendApiKey);
+// Initialize Brevo API client
+const brevoApi = new TransactionalEmailsApi();
+brevoApi.setApiKey(
+  TransactionalEmailsApiApiKeys.apiKey,
+  config.email.brevoApiKey,
+);
 
 /**
- * Base email sender using Resend
+ * Base email sender using Brevo
  */
 export const sendEmail = async (
   to: string,
@@ -17,15 +25,15 @@ export const sendEmail = async (
   html: string,
 ): Promise<void> => {
   try {
-    await resend.emails.send({
-      from: config.email.from,
-      to,
+    await brevoApi.sendTransacEmail({
+      sender: { email: config.email.from, name: config.app.name },
+      to: [{ email: to }],
       subject,
-      html,
+      htmlContent: html,
     });
-    logger.info(`Email sent to ${to} via Resend`);
+    logger.info(`Email sent to ${to} via Brevo`);
   } catch (error) {
-    logger.error("Failed to send email via Resend:", error);
+    logger.error("Failed to send email via Brevo:", error);
     throw error;
   }
 };

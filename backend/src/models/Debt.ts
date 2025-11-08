@@ -27,7 +27,7 @@ export const Debt = sequelize.define(
     },
     debtorId: {
       type: DataTypes.UUID,
-      allowNull: true, // Now optional for non-registered debtors (receivable debts)
+      allowNull: true, // optional for non-registered debtors (receivable debts)
       field: "debtor_id",
       references: {
         model: "users",
@@ -54,7 +54,7 @@ export const Debt = sequelize.define(
     },
     creditorId: {
       type: DataTypes.UUID,
-      allowNull: true, // Now optional for non-registered creditors
+      allowNull: true, // optional for non-registered creditors
       field: "creditor_id",
       references: {
         model: "users",

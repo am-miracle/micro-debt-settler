@@ -15,7 +15,7 @@ interface Config {
     refreshExpiresIn: string;
   };
   email: {
-    resendApiKey: string;
+    brevoApiKey: string;
     from: string;
   };
   stripe: {
@@ -83,7 +83,7 @@ export const config: Config = {
     refreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || "30d",
   },
   email: {
-    resendApiKey: process.env.RESEND_API_KEY || "",
+    brevoApiKey: process.env.BREVO_API_KEY || "",
     from:
       process.env.EMAIL_FROM || "Micro Debt Settler <noreply@yourdomain.com>",
   },
