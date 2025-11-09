@@ -43,7 +43,7 @@ export default function RHFForm() {
                 placeholder="Enter your name"
                 value={value}
                 onChangeText={onChange}
-                className="border-[0.8px] border-gray-200 rounded-md px-[12px] py-2.5 text-sm font-normal text-gray-150"
+                className="border-[0.8px] border-gray-200 rounded-xl px-[12px] py-2.5 text-sm font-normal text-gray-150"
               />
             )}
           />
@@ -62,7 +62,7 @@ export default function RHFForm() {
                 placeholder="Enter your email"
                 value={value}
                 onChangeText={onChange}
-                className="border-[0.8px] border-gray-200 rounded-md px-[12px] py-2.5 text-sm font-normal text-gray-150"
+                className="border-[0.8px] border-gray-200 rounded-xl px-[12px] py-2.5 text-sm font-normal text-gray-150"
                 keyboardType="email-address"
                 autoCapitalize="none"
               />
@@ -84,7 +84,7 @@ export default function RHFForm() {
                 value={value?.toString()}
                 onChangeText={(text) => onChange(Number(text))}
                 keyboardType="phone-pad"
-                className="border-[0.8px] border-gray-200 rounded-md px-[12px] py-2.5 text-sm font-normal text-gray-150"
+                className="border-[0.8px] border-gray-200 rounded-xl px-[12px] py-2.5 text-sm font-normal text-gray-150"
               />
             )}
           />
@@ -106,7 +106,7 @@ export default function RHFForm() {
                 secureTextEntry
                 autoCapitalize="none"
                 textContentType="password"
-                className="border-[0.8px] border-gray-200 rounded-md px-[12px] py-2.5 text-sm font-normal text-gray-150"
+                className="border-[0.8px] border-gray-200 rounded-xl px-[12px] py-2.5 text-sm font-normal text-gray-150"
               />
             )}
           />
@@ -119,7 +119,7 @@ export default function RHFForm() {
         <TouchableOpacity
           onPress={handleSubmit(onSubmit)}
           disabled={!isFormValid}
-          className={`w-full rounded-full py-4 flex flex-row justify-center gap-x-2 ${
+          className={`w-full rounded-full py-4 flex flex-row justify-center custom-shadow gap-x-2 ${
             isFormValid ? "bg-primary" : "bg-primary/50"
           }`}
         >
@@ -129,7 +129,7 @@ export default function RHFForm() {
         </TouchableOpacity>
 
         <Text className="text-xs font-normal text-gray-100 tracking-tight">
-          Already have an account?{" "}
+          Already have an account? 
           <Pressable onPress={() => router.push("/login")}>
             <Text className="underline text-primary">Log in</Text>
           </Pressable>
