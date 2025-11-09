@@ -32,12 +32,12 @@ export default function HomeScreen() {
             <View className="flex flex-col gap-y-3 items-center w-full">
               <TouchableOpacity
                 onPress={() => router.push("/sign-up")}
-                className="bg-primary w-full rounded-full py-4 flex flex-row justify-center gap-x-2 custom-shadow"
+                className="bg-primary w-full rounded-full py-4 flex flex-row items-center justify-center gap-x-2 custom-shadow"
               >
                 <Text className="text-white text-base font-normal">
                   Get Started
                 </Text>
-                <ArrowRightIcon width={28} height={28} fill="#00BFA6" />
+                <ArrowRightIcon width={22} height={22} fill="#00BFA6" />
               </TouchableOpacity>
               <Text className="text-xs font-normal text-gray-100 tracking-tight">
                 Takes less than a few minutes
