@@ -5,10 +5,6 @@ import { getModelData } from "../utils/sequelize-helpers";
 import { OAuth2Client } from "google-auth-library";
 import { User } from "../models";
 
-/**
- * Google OAuth callback handler
- * After successful Google authentication, generate JWT tokens
- */
 export const googleCallback = async (
   req: Request,
   res: Response,
@@ -26,21 +22,21 @@ export const googleCallback = async (
 
     const userData = getModelData(user);
 
-    // Generate access token
+    // generate access token
     const accessToken = jwt.sign(
       { userId: userData.id, email: userData.email },
       config.jwt.secret,
       { expiresIn: config.jwt.expiresIn } as jwt.SignOptions,
     );
 
-    // Generate refresh token
+    // generate refresh token
     const refreshToken = jwt.sign(
       { userId: userData.id },
       config.jwt.refreshSecret,
       { expiresIn: config.jwt.refreshExpiresIn } as jwt.SignOptions,
     );
 
-    // Redirect to frontend with tokens
+    // redirect to frontend with tokens
     const redirectUrl = `${config.app.frontendUrls[0]}/auth/success?accessToken=${accessToken}&refreshToken=${refreshToken}`;
     res.redirect(redirectUrl);
   } catch {
@@ -50,19 +46,12 @@ export const googleCallback = async (
   }
 };
 
-/**
- * Handle failed Google authentication
- */
 export const googleFailure = (_req: Request, res: Response): void => {
   res.redirect(
     `${config.app.frontendUrls[0]}/auth/error?message=Google authentication failed`,
   );
 };
 
-/**
- * Handle Google Sign-In from React Native mobile app
- * Expects Google ID token from the mobile app
- */
 export const googleMobileAuth = async (
   req: Request,
   res: Response,
@@ -79,7 +68,7 @@ export const googleMobileAuth = async (
       return;
     }
 
-    // Verify the Google ID token
+    // verify the Google ID token
     const client = new OAuth2Client(config.google.clientId);
 
     const ticket = await client.verifyIdToken({
@@ -97,11 +86,11 @@ export const googleMobileAuth = async (
       return;
     }
 
-    // Check if user exists or create new user
+    // check if user exists or create new user
     let user = await User.findOne({ where: { email: payload.email } });
 
     if (!user) {
-      // Create new user
+      // create new user
       user = await User.create({
         email: payload.email,
         name: payload.name || payload.email,
@@ -111,7 +100,7 @@ export const googleMobileAuth = async (
         verifiedAt: new Date(),
       });
     } else if (!user.googleId) {
-      // Link Google account to existing user
+      // link Google account to existing user
       await user.update({
         googleId: payload.sub,
         avatarUrl: payload.picture || user.avatarUrl,
@@ -120,7 +109,6 @@ export const googleMobileAuth = async (
 
     const userData = getModelData(user);
 
-    // Generate tokens
     const accessToken = jwt.sign(
       { userId: userData.id, email: userData.email },
       config.jwt.secret,
@@ -133,7 +121,7 @@ export const googleMobileAuth = async (
       { expiresIn: config.jwt.refreshExpiresIn } as jwt.SignOptions,
     );
 
-    // Remove sensitive data
+    // remove sensitive data
     const { passwordHash: _passwordHash, ...userWithoutPassword } = userData;
 
     res.json({

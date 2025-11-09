@@ -23,9 +23,7 @@ const stripe = new Stripe(config.stripe.secretKey, {
   apiVersion: "2025-02-24.acacia",
 });
 
-/**
- * PayPal client setup
- */
+// PayPal client setup
 const getPayPalClient = () => {
   return new Client({
     clientCredentialsAuthCredentials: {
@@ -39,18 +37,14 @@ const getPayPalClient = () => {
   });
 };
 
-/**
- * Generate unique payment reference
- */
+// generate unique payment reference
 const generatePaymentReference = (debtId: string): string => {
   const timestamp = Date.now();
   const random = Math.floor(Math.random() * 10000);
   return `${config.payment.bankTransferReferencePrefix}-${debtId.slice(0, 8)}-${timestamp}-${random}`;
 };
 
-/**
- * Get creditor's payment preferences
- */
+// get creditor's payment preferences
 const getCreditorPaymentPreferences = async (
   creditorId: string,
 ): Promise<UserPaymentPreference | null> => {
@@ -59,11 +53,11 @@ const getCreditorPaymentPreferences = async (
 
   const userData = getModelData(user);
 
-  // This would come from a user preferences table in a real app
+  // This would come from a user preferences table
   // For now, we'll return a default structure
   return {
     provider: "bank_transfer",
-    // These would be stored in user profile
+    // these would be stored in user profile
     accountNumber: userData.accountNumber as string,
     bankName: userData.bankName as string,
     accountName: userData.name,
@@ -91,18 +85,11 @@ const generateDeepLink = (
       return `kuda://send?account=${handle}&amount=${amount}&note=${encodedNote}`;
     case "palmpay":
       return `palmpay://pay?account=${handle}&amount=${amount}&note=${encodedNote}`;
-    case "cashapp":
-      return `https://cash.app/$${handle}/${amount}`;
-    case "venmo":
-      return `venmo://paycharge?txn=pay&recipients=${handle}&amount=${amount}&note=${encodedNote}`;
     default:
       return `${config.app.frontendUrls[0]}/pay?provider=${provider}&handle=${handle}&amount=${amount}`;
   }
 };
 
-/**
- * Create bank transfer payment (Nigerian banks)
- */
 export const createBankTransferPayment = async (
   debtId: string,
 ): Promise<PaymentResult> => {
@@ -124,7 +111,7 @@ export const createBankTransferPayment = async (
       throw new AppError("Debt is already settled or cancelled", 400);
     }
 
-    // Get creditor's bank details
+    // get creditor's bank details
     const creditor = getModelData(debt.get("creditor"));
     const preferences = await getCreditorPaymentPreferences(
       debtData.creditorId,
@@ -145,7 +132,7 @@ export const createBankTransferPayment = async (
       reference,
     };
 
-    // Create transaction record
+    // create transaction record
     await Transaction.create({
       debtId: debtData.id,
       paymentMethod: "manual",
@@ -155,7 +142,7 @@ export const createBankTransferPayment = async (
       currency: debtData.currency,
     });
 
-    // Update debt status
+    // update debt status
     await debt.update({ status: "payment_requested" });
 
     return {
@@ -174,9 +161,6 @@ export const createBankTransferPayment = async (
   }
 };
 
-/**
- * Create Paystack payment (Nigeria)
- */
 export const createPaystackPayment = async (
   debtId: string,
 ): Promise<PaymentResult> => {
@@ -201,7 +185,6 @@ export const createPaystackPayment = async (
     const debtor = getModelData(debt.get("debtor"));
     const reference = generatePaymentReference(debtData.id);
 
-    // Initialize Paystack transaction
     const response = await axios.post(
       "https://api.paystack.co/transaction/initialize",
       {
@@ -227,7 +210,6 @@ export const createPaystackPayment = async (
 
     const { authorization_url } = response.data.data;
 
-    // Create transaction record
     await Transaction.create({
       debtId: debtData.id,
       paymentMethod: "paystack",
@@ -237,7 +219,6 @@ export const createPaystackPayment = async (
       currency: debtData.currency,
     });
 
-    // Update debt status
     await debt.update({ status: "payment_requested" });
 
     return {
@@ -256,9 +237,6 @@ export const createPaystackPayment = async (
   }
 };
 
-/**
- * Create Flutterwave payment (Nigeria & Africa)
- */
 export const createFlutterwavePayment = async (
   debtId: string,
 ): Promise<PaymentResult> => {
@@ -315,7 +293,6 @@ export const createFlutterwavePayment = async (
 
     const paymentUrl = response.data.data.link;
 
-    // Create transaction record
     await Transaction.create({
       debtId: debtData.id,
       paymentMethod: "flutterwave",
@@ -325,7 +302,6 @@ export const createFlutterwavePayment = async (
       currency: debtData.currency,
     });
 
-    // Update debt status
     await debt.update({ status: "payment_requested" });
 
     return {
@@ -371,7 +347,7 @@ export const createPayPalPayment = async (
     const creditor = getModelData(debt.get("creditor"));
     const reference = generatePaymentReference(debtData.id);
 
-    // Create PayPal order
+    // create PayPal order
     const client = getPayPalClient();
     const ordersController = new OrdersController(client);
 
@@ -403,7 +379,7 @@ export const createPayPalPayment = async (
       prefer: "return=representation",
     });
 
-    // Get approval URL
+    // get approval URL
     const approvalUrl = order?.links?.find(
       (link: any) => link.rel === "approve",
     )?.href;
@@ -412,7 +388,7 @@ export const createPayPalPayment = async (
       throw new AppError("PayPal approval URL not found", 500);
     }
 
-    // Create transaction record
+    // create transaction record
     await Transaction.create({
       debtId: debtData.id,
       paymentMethod: "paypal",
@@ -422,7 +398,7 @@ export const createPayPalPayment = async (
       currency: debtData.currency,
     });
 
-    // Update debt status
+    // update debt status
     await debt.update({ status: "payment_requested" });
 
     return {
@@ -441,9 +417,6 @@ export const createPayPalPayment = async (
   }
 };
 
-/**
- * Capture PayPal payment after user approval
- */
 export const capturePayPalPayment = async (
   orderId: string,
 ): Promise<{ success: boolean; debtId?: string }> => {
@@ -463,13 +436,13 @@ export const capturePayPalPayment = async (
         throw new AppError("Debt ID not found in PayPal order", 400);
       }
 
-      // Update transaction
+      // update transaction
       await Transaction.update(
         { status: "completed" },
         { where: { paymentId: orderId } },
       );
 
-      // Update debt
+      // update debt
       const debt = await Debt.findByPk(debtId);
       if (debt) {
         await debt.update({ status: "settled" });
@@ -488,9 +461,6 @@ export const capturePayPalPayment = async (
   }
 };
 
-/**
- * Create Stripe payment (International fallback)
- */
 export const createStripePaymentIntent = async (
   debtId: string,
 ): Promise<PaymentResult> => {
@@ -507,7 +477,7 @@ export const createStripePaymentIntent = async (
       throw new AppError("Debt is already settled or cancelled", 400);
     }
 
-    // Create payment intent
+    // create payment intent
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(Number(debtData.amount) * 100),
       currency: debtData.currency.toLowerCase(),
@@ -519,7 +489,7 @@ export const createStripePaymentIntent = async (
       description: debtData.description,
     });
 
-    // Create transaction record
+    // create transaction record
     await Transaction.create({
       debtId: debtData.id,
       paymentMethod: "stripe",
@@ -529,7 +499,7 @@ export const createStripePaymentIntent = async (
       currency: debtData.currency,
     });
 
-    // Update debt status
+    // update debt status
     await debt.update({ status: "payment_requested" });
 
     return {
@@ -544,9 +514,6 @@ export const createStripePaymentIntent = async (
   }
 };
 
-/**
- * Handle Stripe webhook
- */
 export const handleStripeWebhook = async (event: any): Promise<void> => {
   try {
     switch (event.type) {
@@ -589,9 +556,6 @@ export const handleStripeWebhook = async (event: any): Promise<void> => {
   }
 };
 
-/**
- * Handle Paystack webhook
- */
 export const handlePaystackWebhook = async (event: any): Promise<void> => {
   try {
     if (event.event === "charge.success") {
@@ -617,9 +581,6 @@ export const handlePaystackWebhook = async (event: any): Promise<void> => {
   }
 };
 
-/**
- * Record manual payment confirmation
- */
 export const recordManualPayment = async (
   debtId: string,
   userId: string,
@@ -632,7 +593,7 @@ export const recordManualPayment = async (
 
   const debtData = getModelData(debt);
 
-  // Only debtor or creditor can record manual payment
+  // only debtor or creditor can record manual payment
   if (debtData.debtorId !== userId && debtData.creditorId !== userId) {
     throw new AppError("Not authorized", 403);
   }
@@ -641,7 +602,6 @@ export const recordManualPayment = async (
     throw new AppError("Debt is already settled", 400);
   }
 
-  // Create transaction
   await Transaction.create({
     debtId: debtData.id,
     paymentMethod: "manual",
@@ -650,10 +610,8 @@ export const recordManualPayment = async (
     currency: debtData.currency,
   });
 
-  // Update debt
   await debt.update({ status: "settled" });
 
-  // Send confirmation
   await sendPaymentConfirmation(debtId);
 
   logger.info(`Manual payment recorded for debt ${debtId}`);

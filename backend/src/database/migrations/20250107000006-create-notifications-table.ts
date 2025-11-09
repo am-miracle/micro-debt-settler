@@ -1,11 +1,10 @@
-import { QueryInterface, DataTypes } from 'sequelize';
+import { QueryInterface, DataTypes } from "sequelize";
 
-/**
- * Migration: Create notifications table
- */
-
-export async function up(queryInterface: QueryInterface, Sequelize: typeof DataTypes) {
-  await queryInterface.createTable('notifications', {
+export async function up(
+  queryInterface: QueryInterface,
+  Sequelize: typeof DataTypes,
+) {
+  await queryInterface.createTable("notifications", {
     id: {
       type: Sequelize.UUID,
       defaultValue: Sequelize.UUIDV4,
@@ -15,30 +14,36 @@ export async function up(queryInterface: QueryInterface, Sequelize: typeof DataT
       type: Sequelize.UUID,
       allowNull: false,
       references: {
-        model: 'users',
-        key: 'id',
+        model: "users",
+        key: "id",
       },
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE',
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     },
     debt_id: {
       type: Sequelize.UUID,
       allowNull: true,
       references: {
-        model: 'debts',
-        key: 'id',
+        model: "debts",
+        key: "id",
       },
-      onDelete: 'SET NULL',
-      onUpdate: 'CASCADE',
+      onDelete: "SET NULL",
+      onUpdate: "CASCADE",
     },
 
-    // Notification Details
     type: {
-      type: Sequelize.ENUM('payment_request', 'reminder', 'payment_received', 'settled', 'dispute', 'cancelled'),
+      type: Sequelize.ENUM(
+        "payment_request",
+        "reminder",
+        "payment_received",
+        "settled",
+        "dispute",
+        "cancelled",
+      ),
       allowNull: false,
     },
     channel: {
-      type: Sequelize.ENUM('email', 'sms', 'push', 'in_app'),
+      type: Sequelize.ENUM("email", "sms", "push", "in_app"),
       allowNull: false,
     },
     subject: {
@@ -50,10 +55,9 @@ export async function up(queryInterface: QueryInterface, Sequelize: typeof DataT
       allowNull: false,
     },
 
-    // Delivery Status
     status: {
-      type: Sequelize.ENUM('pending', 'sent', 'delivered', 'failed', 'read'),
-      defaultValue: 'pending',
+      type: Sequelize.ENUM("pending", "sent", "delivered", "failed", "read"),
+      defaultValue: "pending",
       allowNull: false,
     },
     sent_at: {
@@ -77,7 +81,6 @@ export async function up(queryInterface: QueryInterface, Sequelize: typeof DataT
       allowNull: true,
     },
 
-    // Provider Details
     provider: {
       type: Sequelize.STRING,
       allowNull: true,
@@ -97,15 +100,15 @@ export async function up(queryInterface: QueryInterface, Sequelize: typeof DataT
     },
   });
 
-  // Add indexes
-  await queryInterface.addIndex('notifications', ['user_id']);
-  await queryInterface.addIndex('notifications', ['debt_id']);
-  await queryInterface.addIndex('notifications', ['type']);
-  await queryInterface.addIndex('notifications', ['status']);
-  await queryInterface.addIndex('notifications', ['created_at']);
-  await queryInterface.addIndex('notifications', ['user_id', 'read_at']);
+  // Add ndexes
+  await queryInterface.addIndex("notifications", ["user_id"]);
+  await queryInterface.addIndex("notifications", ["debt_id"]);
+  await queryInterface.addIndex("notifications", ["type"]);
+  await queryInterface.addIndex("notifications", ["status"]);
+  await queryInterface.addIndex("notifications", ["created_at"]);
+  await queryInterface.addIndex("notifications", ["user_id", "read_at"]);
 }
 
 export async function down(queryInterface: QueryInterface) {
-  await queryInterface.dropTable('notifications');
+  await queryInterface.dropTable("notifications");
 }

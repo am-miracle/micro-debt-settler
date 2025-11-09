@@ -3,10 +3,8 @@ import * as debtService from "../services/debt.service";
 import { ApiResponse } from "../utils/helpers";
 import { CONSTANTS } from "../utils/constants";
 
-/**
- * Create a debt where YOU owe money to someone
- * Use case: "I owe John $20 for drinks"
- */
+// create a debt where I owe money to someone
+// use case: "I owe John $20 for drinks"
 export const createDebt = async (
   req: Request,
   res: Response,
@@ -52,10 +50,8 @@ export const createDebt = async (
   }
 };
 
-/**
- * Create a debt where someone OWES YOU money
- * Use case: "John owes me $20 for drinks"
- */
+// create a debt where someone OWES me money
+// use case: "John owes me $20 for drinks"
 export const createReceivableDebt = async (
   req: Request,
   res: Response,
@@ -151,9 +147,7 @@ export const getDebts = async (
   }
 };
 
-/**
- * Get debts by direction (what you owe vs what you're owed)
- */
+// get debts by direction (what i owe vs what i am owed)
 export const getDebtsByDirection = async (
   req: Request,
   res: Response,

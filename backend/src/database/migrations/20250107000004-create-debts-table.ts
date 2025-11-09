@@ -1,11 +1,10 @@
-import { QueryInterface, DataTypes } from 'sequelize';
+import { QueryInterface, DataTypes } from "sequelize";
 
-/**
- * Migration: Create debts table
- */
-
-export async function up(queryInterface: QueryInterface, Sequelize: typeof DataTypes) {
-  await queryInterface.createTable('debts', {
+export async function up(
+  queryInterface: QueryInterface,
+  Sequelize: typeof DataTypes,
+) {
+  await queryInterface.createTable("debts", {
     id: {
       type: Sequelize.UUID,
       defaultValue: Sequelize.UUIDV4,
@@ -15,24 +14,24 @@ export async function up(queryInterface: QueryInterface, Sequelize: typeof DataT
       type: Sequelize.UUID,
       allowNull: false,
       references: {
-        model: 'users',
-        key: 'id',
+        model: "users",
+        key: "id",
       },
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE',
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     },
     creditor_id: {
       type: Sequelize.UUID,
       allowNull: false,
       references: {
-        model: 'users',
-        key: 'id',
+        model: "users",
+        key: "id",
       },
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE',
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     },
 
-    // Amounts
+    // amounts
     amount: {
       type: Sequelize.DECIMAL(15, 2),
       allowNull: false,
@@ -40,21 +39,29 @@ export async function up(queryInterface: QueryInterface, Sequelize: typeof DataT
     currency: {
       type: Sequelize.STRING(3),
       allowNull: false,
-      defaultValue: 'NGN',
+      defaultValue: "NGN",
     },
     description: {
       type: Sequelize.TEXT,
       allowNull: false,
     },
 
-    // Status
+    // status
     status: {
-      type: Sequelize.ENUM('pending', 'payment_requested', 'paid', 'confirmed', 'settled', 'disputed', 'cancelled'),
-      defaultValue: 'pending',
+      type: Sequelize.ENUM(
+        "pending",
+        "payment_requested",
+        "paid",
+        "confirmed",
+        "settled",
+        "disputed",
+        "cancelled",
+      ),
+      defaultValue: "pending",
       allowNull: false,
     },
 
-    // Dates
+    // dates
     due_date: {
       type: Sequelize.DATE,
       allowNull: false,
@@ -72,7 +79,7 @@ export async function up(queryInterface: QueryInterface, Sequelize: typeof DataT
       allowNull: true,
     },
 
-    // External Integration
+    // external integration
     calendar_event_id: {
       type: Sequelize.STRING,
       allowNull: true,
@@ -82,7 +89,7 @@ export async function up(queryInterface: QueryInterface, Sequelize: typeof DataT
       allowNull: true,
     },
 
-    // Tracking
+    // tracking
     payment_reference: {
       type: Sequelize.STRING,
       allowNull: false,
@@ -108,16 +115,18 @@ export async function up(queryInterface: QueryInterface, Sequelize: typeof DataT
     },
   });
 
-  // Add indexes
-  await queryInterface.addIndex('debts', ['debtor_id']);
-  await queryInterface.addIndex('debts', ['creditor_id']);
-  await queryInterface.addIndex('debts', ['status']);
-  await queryInterface.addIndex('debts', ['due_date']);
-  await queryInterface.addIndex('debts', ['debtor_id', 'status']);
-  await queryInterface.addIndex('debts', ['creditor_id', 'status']);
-  await queryInterface.addIndex('debts', ['payment_reference'], { unique: true });
+  // add indexes
+  await queryInterface.addIndex("debts", ["debtor_id"]);
+  await queryInterface.addIndex("debts", ["creditor_id"]);
+  await queryInterface.addIndex("debts", ["status"]);
+  await queryInterface.addIndex("debts", ["due_date"]);
+  await queryInterface.addIndex("debts", ["debtor_id", "status"]);
+  await queryInterface.addIndex("debts", ["creditor_id", "status"]);
+  await queryInterface.addIndex("debts", ["payment_reference"], {
+    unique: true,
+  });
 
-  // Add check constraint
+  // add check constraint
   await queryInterface.sequelize.query(`
     ALTER TABLE debts
     ADD CONSTRAINT debtor_not_creditor
@@ -132,5 +141,5 @@ export async function up(queryInterface: QueryInterface, Sequelize: typeof DataT
 }
 
 export async function down(queryInterface: QueryInterface) {
-  await queryInterface.dropTable('debts');
+  await queryInterface.dropTable("debts");
 }

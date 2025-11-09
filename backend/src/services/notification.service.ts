@@ -9,16 +9,12 @@ import { Notification, User, Debt } from "../models";
 import { formatCurrency } from "../utils/helpers";
 import { getModelData } from "../utils/sequelize-helpers";
 
-// Initialize Brevo API client
 const brevoApi = new TransactionalEmailsApi();
 brevoApi.setApiKey(
   TransactionalEmailsApiApiKeys.apiKey,
   config.email.brevoApiKey,
 );
 
-/**
- * Base email sender using Brevo
- */
 export const sendEmail = async (
   to: string,
   subject: string,
@@ -38,9 +34,7 @@ export const sendEmail = async (
   }
 };
 
-/**
- * Send SMS notification via Twilio (international coverage)
- */
+// send SMS notification via Twilio
 export const sendSMS = async (
   phone: string,
   message: string,
@@ -76,9 +70,6 @@ export const sendSMS = async (
   }
 };
 
-/**
- * Reusable email template builder
- */
 const buildEmailTemplate = (params: {
   title: string;
   titleColor: string;
@@ -129,16 +120,13 @@ const buildEmailTemplate = (params: {
   `;
 };
 
-/**
- * Get payment method details for display based on selected payment method
- */
 const getPaymentMethodDetails = (
   debtData: any,
   paymentLink?: string,
 ): string => {
   const method = debtData.paymentMethod;
 
-  // Bank Transfer
+  // bank Transfer
   if (
     method === "bank_transfer" &&
     debtData.bankName &&
@@ -155,7 +143,7 @@ const getPaymentMethodDetails = (
     `;
   }
 
-  // Paystack (Nigerian payment gateway)
+  // paystack
   if (method === "paystack" && paymentLink) {
     return `
       <h3 style="margin-top: 20px;">💳 Pay with Paystack:</h3>
@@ -169,7 +157,7 @@ const getPaymentMethodDetails = (
     `;
   }
 
-  // Flutterwave (African payment gateway)
+  // Flutterwave
   if (method === "flutterwave" && paymentLink) {
     return `
       <h3 style="margin-top: 20px;">💳 Pay with Flutterwave:</h3>
@@ -183,7 +171,7 @@ const getPaymentMethodDetails = (
     `;
   }
 
-  // Stripe (International cards)
+  // Stripe
   if (method === "stripe" && paymentLink) {
     return `
       <h3 style="margin-top: 20px;">💳 Pay with Stripe:</h3>
@@ -211,11 +199,11 @@ const getPaymentMethodDetails = (
     `;
   }
 
-  // Manual or no method specified - show all options
+  // manual or no method specified - show all options
   if (!method || method === "manual") {
     let html = `<h3 style="margin-top: 20px;">Payment Options:</h3>`;
 
-    // Show bank transfer if details available
+    // show bank transfer if details available
     if (debtData.bankName && debtData.accountNumber) {
       html += `
         <div style="background: #dbeafe; padding: 15px; border-radius: 8px; margin: 15px 0;">
@@ -227,7 +215,7 @@ const getPaymentMethodDetails = (
       `;
     }
 
-    // Show online payment link if available
+    // show online payment link if available
     if (paymentLink) {
       html += `
         <div style="background: #dbeafe; padding: 15px; border-radius: 8px; margin: 15px 0;">
@@ -246,10 +234,8 @@ const getPaymentMethodDetails = (
   return "";
 };
 
-/**
- * Send notification when a receivable debt is created (someone owes YOU)
- * Notifies the DEBTOR
- */
+// send notification when a receivable debt is created (someone owes me)
+// notifies the DEBTOR
 export const sendDebtCreatedNotification = async (
   debtId: string,
 ): Promise<void> => {
@@ -277,7 +263,7 @@ export const sendDebtCreatedNotification = async (
       debtData.currency,
     );
 
-    // Get debtor info
+    // get debtor info
     let debtorEmail: string | null = null;
     let debtorName: string | null = null;
     let debtorPhone: string | null = null;
@@ -293,7 +279,7 @@ export const sendDebtCreatedNotification = async (
       debtorPhone = debtData.debtorPhone;
     }
 
-    // Get creditor info
+    // get creditor info
     let creditorName: string | null = null;
     if (debtData.creditorId && debt.get("creditor")) {
       creditorName = getModelData(debt.get("creditor")).name;
@@ -303,7 +289,7 @@ export const sendDebtCreatedNotification = async (
 
     const paymentLink = `${config.app.frontendUrls[0]}/payment/${debtData.id}`;
 
-    // Send Email
+    // send Email
     if (debtorEmail) {
       const details = [
         { label: "Amount", value: amountFormatted },
@@ -336,7 +322,7 @@ export const sendDebtCreatedNotification = async (
       );
     }
 
-    // Send SMS to ALL users
+    // send SMS to users involve
     if (debtorPhone) {
       let smsMessage = `${config.app.name}: ${creditorName || "Someone"} says you owe ${amountFormatted} for "${debtData.description}". Due: ${new Date(debtData.dueDate).toLocaleDateString()}.`;
 
@@ -369,10 +355,8 @@ export const sendDebtCreatedNotification = async (
   }
 };
 
-/**
- * Send notification when YOU create a debt YOU owe
- * Notifies the CREDITOR
- */
+// send notification when I create a debt I owe
+// notifies the creditor
 export const sendCreditorDebtNotification = async (
   debtId: string,
 ): Promise<void> => {
@@ -396,7 +380,7 @@ export const sendCreditorDebtNotification = async (
       debtData.currency,
     );
 
-    // Get creditor info
+    // get creditor info
     let creditorEmail: string | null = null;
     let creditorName: string | null = null;
     let creditorPhone: string | null = null;
@@ -412,7 +396,7 @@ export const sendCreditorDebtNotification = async (
       creditorPhone = debtData.creditorPhone;
     }
 
-    // Get debtor info
+    // get debtor info
     let debtorName: string | null = null;
     if (debtData.debtorId && debt.get("debtor")) {
       debtorName = getModelData(debt.get("debtor")).name;
@@ -420,7 +404,6 @@ export const sendCreditorDebtNotification = async (
       debtorName = debtData.debtorName;
     }
 
-    // Send Email
     if (creditorEmail) {
       const details = [
         { label: "Amount", value: amountFormatted },
@@ -448,7 +431,7 @@ export const sendCreditorDebtNotification = async (
       );
     }
 
-    // Send SMS to ALL users
+    // Send SMS to users involve
     if (creditorPhone) {
       let smsMessage = `${config.app.name}: ${debtorName || "Someone"} acknowledged they owe you ${amountFormatted} for "${debtData.description}". Due: ${new Date(debtData.dueDate).toLocaleDateString()}.`;
 
@@ -459,7 +442,7 @@ export const sendCreditorDebtNotification = async (
       await sendSMS(creditorPhone, smsMessage);
     }
 
-    // Log notification for ALL users (registered and non-registered)
+    // Log notification for all users (registered and non-registered)
     await Notification.create({
       userId: debtData.creditorId || null,
       recipientEmail: creditorEmail || null,
@@ -481,9 +464,6 @@ export const sendCreditorDebtNotification = async (
   }
 };
 
-/**
- * Send payment request (manual trigger)
- */
 export const sendPaymentRequest = async (debtId: string): Promise<void> => {
   try {
     const debt = await Debt.findByPk(debtId, {
@@ -501,7 +481,7 @@ export const sendPaymentRequest = async (debtId: string): Promise<void> => {
 
     const debtData = getModelData(debt);
 
-    // Get debtor info (registered or non-registered)
+    // get debtor info (registered or non-registered)
     let debtorEmail: string | null = null;
     let debtorName: string | null = null;
     let debtorPhone: string | null = null;
@@ -517,7 +497,6 @@ export const sendPaymentRequest = async (debtId: string): Promise<void> => {
       debtorPhone = debtData.debtorPhone;
     }
 
-    // Get creditor info
     let creditorName: string | null = null;
     if (debtData.creditorId && debt.get("creditor")) {
       creditorName = getModelData(debt.get("creditor")).name;
@@ -557,7 +536,7 @@ export const sendPaymentRequest = async (debtId: string): Promise<void> => {
       );
     }
 
-    // Log notification for ALL users
+    // Log notification for users
     await Notification.create({
       userId: debtData.debtorId || null,
       recipientEmail: debtorEmail || null,
@@ -578,9 +557,6 @@ export const sendPaymentRequest = async (debtId: string): Promise<void> => {
   }
 };
 
-/**
- * Send payment reminder
- */
 export const sendPaymentReminder = async (debtId: string): Promise<void> => {
   try {
     const debt = await Debt.findByPk(debtId, {
@@ -598,7 +574,6 @@ export const sendPaymentReminder = async (debtId: string): Promise<void> => {
 
     const debtData = getModelData(debt);
 
-    // Get debtor info (registered or non-registered)
     let debtorEmail: string | null = null;
     let debtorName: string | null = null;
     let debtorPhone: string | null = null;
@@ -614,7 +589,6 @@ export const sendPaymentReminder = async (debtId: string): Promise<void> => {
       debtorPhone = debtData.debtorPhone;
     }
 
-    // Get creditor info
     let creditorName: string | null = null;
     if (debtData.creditorId && debt.get("creditor")) {
       creditorName = getModelData(debt.get("creditor")).name;
@@ -654,7 +628,6 @@ export const sendPaymentReminder = async (debtId: string): Promise<void> => {
       );
     }
 
-    // Log notification for ALL users
     await Notification.create({
       userId: debtData.debtorId || null,
       recipientEmail: debtorEmail || null,
@@ -675,9 +648,6 @@ export const sendPaymentReminder = async (debtId: string): Promise<void> => {
   }
 };
 
-/**
- * Send payment confirmation
- */
 export const sendPaymentConfirmation = async (
   debtId: string,
 ): Promise<void> => {
@@ -701,7 +671,6 @@ export const sendPaymentConfirmation = async (
 
     const debtData = getModelData(debt);
 
-    // Get debtor info (registered or non-registered)
     let debtorEmail: string | null = null;
     let debtorName: string | null = null;
     let debtorPhone: string | null = null;
@@ -717,7 +686,6 @@ export const sendPaymentConfirmation = async (
       debtorPhone = debtData.debtorPhone;
     }
 
-    // Get creditor info (registered or non-registered)
     let creditorEmail: string | null = null;
     let creditorName: string | null = null;
     let creditorPhone: string | null = null;
@@ -744,7 +712,7 @@ export const sendPaymentConfirmation = async (
       { label: "Status", value: "✓ Settled" },
     ];
 
-    // Email to debtor
+    // email to debtor
     const debtorEmailHtml = buildEmailTemplate({
       title: "✅ Payment Confirmed",
       titleColor: "#10b981",
@@ -754,7 +722,7 @@ export const sendPaymentConfirmation = async (
       footer: "Thank you for settling your debt promptly!",
     });
 
-    // Email to creditor
+    // email to creditor
     const creditorDetails = [
       { label: "Amount Received", value: amountFormatted },
       { label: "From", value: debtorName },
@@ -792,7 +760,6 @@ export const sendPaymentConfirmation = async (
 
     await Promise.all(emailPromises);
 
-    // Log notifications for ALL users (registered and non-registered)
     await Promise.all([
       Notification.create({
         userId: debtData.debtorId || null,

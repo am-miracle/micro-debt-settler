@@ -11,7 +11,7 @@ import * as fs from "fs";
  *   npm run migrate:create  - Create a new migration file
  */
 
-// Create Umzug instance
+// create umzug instance
 export const umzug = new Umzug({
   migrations: {
     glob: ["migrations/*.ts", { cwd: path.join(__dirname) }],
@@ -113,22 +113,19 @@ export async function down(queryInterface: QueryInterface, Sequelize: typeof Dat
   logger.info("2. Run: npm run migrate");
 };
 
-/**
- * Run migrations
- */
 const runMigrations = async (): Promise<void> => {
   const command = getCommand();
 
   try {
     logger.info("[MIGRATION] Starting migration...");
 
-    // Test database connection
+    // test db connection
     await sequelize.authenticate();
     logger.info("[SUCCESS] Database connected");
 
     switch (command) {
       case "up": {
-        // Run pending migrations
+        // run pending migrations
         const pendingMigrations = await umzug.pending();
 
         if (pendingMigrations.length === 0) {
@@ -147,7 +144,7 @@ const runMigrations = async (): Promise<void> => {
       }
 
       case "down": {
-        // Rollback last migration
+        // rollback last migration
         const executed = await umzug.executed();
 
         if (executed.length === 0) {
@@ -164,14 +161,12 @@ const runMigrations = async (): Promise<void> => {
       }
 
       case "create": {
-        // Create new migration file
         const migrationName = process.argv[3];
         await createMigration(migrationName);
         break;
       }
 
       case "status": {
-        // Show migration status
         const pending = await umzug.pending();
         const executedList = await umzug.executed();
 
@@ -214,7 +209,6 @@ const runMigrations = async (): Promise<void> => {
   }
 };
 
-// Run migrations if this file is executed directly
 if (require.main === module) {
   runMigrations();
 }

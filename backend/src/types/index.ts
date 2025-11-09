@@ -76,19 +76,22 @@ export enum NagSensitivity {
   HIGH = "high",
 }
 
-export enum DebtStatus {
-  PENDING = "pending",
-  READY_TO_SEND = "ready_to_send",
-  PAYMENT_REQUESTED = "payment_requested",
-  SETTLED = "settled",
-  CANCELLED = "cancelled",
-}
-
-export enum PaymentMethod {
-  STRIPE = "stripe",
-  PAYPAL = "paypal",
-  MANUAL = "manual",
-}
+// export enum DebtStatus {
+//   PENDING = "pending",
+//   READY_TO_SEND = "ready_to_send",
+//   PAYMENT_REQUESTED = "payment_requested",
+//   SETTLED = "settled",
+//   CANCELLED = "cancelled",
+// }
+export const DebtStatus = {
+  PENDING: "pending",
+  PAYMENT_REQUESTED: "payment_requested",
+  PAID: "paid",
+  CONFIRMED: "confirmed",
+  SETTLED: "settled",
+  DISPUTED: "disputed",
+  CANCELLED: "cancelled",
+} as const;
 
 export enum TransactionStatus {
   PENDING = "pending",

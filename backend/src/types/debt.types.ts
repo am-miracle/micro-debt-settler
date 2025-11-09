@@ -1,13 +1,13 @@
 export interface CreateDebtDTO {
-  creditorId?: string; // Optional if using non-registered creditor
-  creditorName?: string; // For non-registered creditors
-  creditorEmail?: string; // For non-registered creditors
-  creditorPhone?: string; // For non-registered creditors
+  creditorId?: string; // optional if using non-registered creditor
+  creditorName?: string; // for non-registered creditors
+  creditorEmail?: string; // for non-registered creditors
+  creditorPhone?: string; // for non-registered creditors
   amount: number;
   currency: string;
   description: string;
   debtorName?: string;
-  dueDate?: string; // Optional manual due date
+  dueDate?: string; // optional manual due date
   paymentMethod?:
     | "bank_transfer"
     | "paystack"
@@ -22,15 +22,15 @@ export interface CreateDebtDTO {
 }
 
 export interface CreateReceivableDebtDTO {
-  debtorId?: string; // Optional if using non-registered debtor
-  debtorName?: string; // For non-registered debtors
-  debtorEmail?: string; // For non-registered debtors
-  debtorPhone?: string; // For non-registered debtors
+  debtorId?: string; // optional if using non-registered debtor
+  debtorName?: string; // for non-registered debtors
+  debtorEmail?: string; // for non-registered debtors
+  debtorPhone?: string; // for non-registered debtors
   amount: number;
   currency: string;
   description: string;
   creditorName?: string;
-  dueDate?: string; // Optional manual due date
+  dueDate?: string; // optional manual due date
   paymentMethod?:
     | "bank_transfer"
     | "paystack"

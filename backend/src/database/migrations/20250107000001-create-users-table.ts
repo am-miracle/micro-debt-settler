@@ -1,9 +1,5 @@
 import { QueryInterface, DataTypes } from "sequelize";
 
-/**
- * Migration: Create users table
- */
-
 export async function up(
   queryInterface: QueryInterface,
   Sequelize: typeof DataTypes,
@@ -41,7 +37,7 @@ export async function up(
       unique: true,
     },
 
-    // Preferences
+    // preferences
     nag_sensitivity: {
       type: Sequelize.ENUM("low", "medium", "high"),
       defaultValue: "medium",
@@ -63,7 +59,7 @@ export async function up(
       allowNull: false,
     },
 
-    // Notification Settings
+    // notification settings
     email_notifications: {
       type: Sequelize.BOOLEAN,
       defaultValue: true,
@@ -80,7 +76,7 @@ export async function up(
       allowNull: false,
     },
 
-    // Account Status
+    // account status
     is_active: {
       type: Sequelize.BOOLEAN,
       defaultValue: true,
@@ -110,9 +106,9 @@ export async function up(
     },
   });
 
-  // Add indexes
+  // add indexes
   await queryInterface.addIndex("users", ["email"], { unique: true });
-  // Partial unique index for google_id (only when not null)
+  // partial unique index for google_id (only when not null)
   await queryInterface.sequelize.query(`
     CREATE UNIQUE INDEX users_google_id_unique
     ON users (google_id)

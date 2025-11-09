@@ -75,9 +75,6 @@ export const logout = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    // Since we're using JWT (stateless), logout is handled client-side
-    // Client should delete the tokens from storage
-    // Optionally, you can implement token blacklisting here
     ApiResponse.success(res, null, "Logged out successfully");
   } catch (error) {
     next(error);

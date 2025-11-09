@@ -9,7 +9,6 @@ import { config } from "../config/env";
 
 const router = Router();
 
-// Health check
 router.get("/health", (_req, res) => {
   res.json({
     success: true,
@@ -19,7 +18,6 @@ router.get("/health", (_req, res) => {
   });
 });
 
-// API routes
 router.use("/auth", authRoutes);
 router.use("/oauth", oauthRoutes);
 router.use("/debts", debtRoutes);

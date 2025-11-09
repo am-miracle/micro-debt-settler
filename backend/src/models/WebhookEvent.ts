@@ -1,9 +1,6 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/database";
 
-/**
- * WebhookEvent Model - Functional approach
- */
 export const WebhookEvent = sequelize.define(
   "WebhookEvent",
   {
@@ -70,9 +67,7 @@ export const WebhookEvent = sequelize.define(
   },
 );
 
-/**
- * Helper function to check if webhook event already processed (idempotency)
- */
+// helper function to check if webhook event already processed (idempotency)
 export const isWebhookProcessed = async (eventId: string): Promise<boolean> => {
   const event = await WebhookEvent.findOne({
     where: { eventId, processed: true },
@@ -80,9 +75,7 @@ export const isWebhookProcessed = async (eventId: string): Promise<boolean> => {
   return !!event;
 };
 
-/**
- * Helper function to record webhook event
- */
+// helper function to record webhook event
 export const recordWebhookEvent = async (params: {
   provider: string;
   eventType: string;

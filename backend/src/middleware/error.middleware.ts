@@ -20,7 +20,7 @@ export const errorHandler = (
   res: Response,
   _next: NextFunction,
 ): void => {
-  // Log error
+  // log error
   logger.error("Error occurred:", {
     message: err.message,
     stack: err.stack,
@@ -28,17 +28,17 @@ export const errorHandler = (
     method: req.method,
   });
 
-  // Default error values
+  // default error values
   let statusCode = 500;
   let message = "Internal server error";
 
-  // Handle custom AppError
+  // handle custom AppError
   if (err instanceof AppError) {
     statusCode = err.statusCode;
     message = err.message;
   }
 
-  // Handle Sequelize errors
+  // handle sequelize errors
   if (
     err.name === "SequelizeValidationError" ||
     err.name === "SequelizeUniqueConstraintError"
@@ -52,7 +52,7 @@ export const errorHandler = (
     message = "Invalid reference";
   }
 
-  // Send response
+  // send response
   res.status(statusCode).json({
     success: false,
     message,

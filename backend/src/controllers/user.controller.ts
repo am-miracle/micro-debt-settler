@@ -48,13 +48,13 @@ export const changePassword = async (
       throw new AppError("User not found", 404);
     }
 
-    // Verify current password
+    // verify current password
     const isPasswordValid = await user.comparePassword(currentPassword);
     if (!isPasswordValid) {
       throw new AppError("Current password is incorrect", 400);
     }
 
-    // Update password
+    // update password
     await user.update({ password: newPassword });
 
     ApiResponse.success(res, null, "Password changed successfully");
@@ -78,13 +78,13 @@ export const deleteAccount = async (
       throw new AppError("User not found", 404);
     }
 
-    // Verify password
+    // verify password
     const isPasswordValid = await user.comparePassword(password);
     if (!isPasswordValid) {
       throw new AppError("Password is incorrect", 400);
     }
 
-    // Delete user (cascade will handle related records)
+    // delete user (cascade will handle related records)
     await user.destroy();
 
     ApiResponse.success(res, null, "Account deleted successfully");
@@ -93,9 +93,7 @@ export const deleteAccount = async (
   }
 };
 
-/**
- * Get user settings with stats
- */
+// get user settings with stats
 export const getSettings = async (
   req: Request,
   res: Response,
@@ -110,9 +108,7 @@ export const getSettings = async (
   }
 };
 
-/**
- * Update user settings
- */
+// update user settings
 export const updateSettings = async (
   req: Request,
   res: Response,
@@ -127,9 +123,7 @@ export const updateSettings = async (
   }
 };
 
-/**
- * Get payment history
- */
+// get payment history
 export const getPaymentHistory = async (
   req: Request,
   res: Response,

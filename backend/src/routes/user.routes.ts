@@ -6,7 +6,6 @@ import { userValidators } from "../utils/validators";
 
 const router = Router();
 
-// All user routes require authentication
 router.use(authenticate);
 
 router.patch(
@@ -25,11 +24,9 @@ router.delete(
   userController.deleteAccount,
 );
 
-// Settings routes
 router.get("/settings", userController.getSettings);
 router.patch("/settings", userController.updateSettings);
 
-// Payment history
 router.get("/payment-history", userController.getPaymentHistory);
 
 export default router;

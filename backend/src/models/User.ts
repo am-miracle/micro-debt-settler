@@ -43,7 +43,6 @@ export const User = sequelize.define(
       field: "google_id",
     },
 
-    // Preferences
     nagSensitivity: {
       type: DataTypes.ENUM("low", "medium", "high"),
       defaultValue: "medium",
@@ -67,7 +66,6 @@ export const User = sequelize.define(
       field: "default_currency",
     },
 
-    // Notification Settings
     emailNotifications: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
@@ -87,7 +85,6 @@ export const User = sequelize.define(
       field: "push_notifications",
     },
 
-    // Account Status
     isActive: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
@@ -122,7 +119,7 @@ export const User = sequelize.define(
     ],
     hooks: {
       beforeCreate: async (user: any) => {
-        // Check both user.passwordHash and user.dataValues.passwordHash
+        // check both user.passwordHash and user.dataValues.passwordHash
         const password =
           user.passwordHash ||
           user.dataValues?.passwordHash ||
@@ -152,7 +149,7 @@ export const User = sequelize.define(
   },
 );
 
-// Add instance method for password comparison
+// add instance method for password comparison
 (User as any).prototype.comparePassword = async function (
   candidatePassword: string,
 ): Promise<boolean> {

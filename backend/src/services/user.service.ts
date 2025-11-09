@@ -3,16 +3,13 @@ import { AppError } from "../middleware/error.middleware";
 import { getModelData } from "../utils/sequelize-helpers";
 import { Op } from "sequelize";
 
-/**
- * Get user statistics (for dashboard/settings)
- */
 export const getUserStats = async (userId: string) => {
-  // Get all debts where user is debtor (owes money)
+  // get all debts where user is debtor (owes money)
   const owedDebts = await Debt.findAll({
     where: { debtorId: userId },
   });
 
-  // Get all debts where user is creditor (is owed money)
+  // get all debts where user is creditor (is owed money)
   const receivableDebts = await Debt.findAll({
     where: { creditorId: userId },
   });
@@ -20,7 +17,7 @@ export const getUserStats = async (userId: string) => {
   const owedDebtsData = owedDebts.map((debt) => getModelData(debt));
   const receivableDebtsData = receivableDebts.map((debt) => getModelData(debt));
 
-  // Calculate statistics
+  // calculate statistics
   const totalOwedDebts = owedDebtsData.length;
   const totalReceivableDebts = receivableDebtsData.length;
 
@@ -69,9 +66,6 @@ export const getUserStats = async (userId: string) => {
   };
 };
 
-/**
- * Get user settings
- */
 export const getUserSettings = async (userId: string) => {
   const user = await User.findByPk(userId, {
     attributes: [
@@ -101,9 +95,6 @@ export const getUserSettings = async (userId: string) => {
   };
 };
 
-/**
- * Update user settings
- */
 export const updateUserSettings = async (
   userId: string,
   settings: {
@@ -135,9 +126,6 @@ export const updateUserSettings = async (
   return userWithoutPassword;
 };
 
-/**
- * Get payment history for a user
- */
 export const getPaymentHistory = async (
   userId: string,
   options: {
@@ -151,7 +139,7 @@ export const getPaymentHistory = async (
   const limit = options.limit || 20;
   const offset = (page - 1) * limit;
 
-  // Get all debts where user is involved
+  // get all debts where user is involved
   const userDebts = await Debt.findAll({
     where: {
       [Op.or]: [{ debtorId: userId }, { creditorId: userId }],
@@ -161,7 +149,7 @@ export const getPaymentHistory = async (
 
   const debtIds = userDebts.map((debt) => getModelData(debt).id);
 
-  // Build where clause
+  // build where clause
   const where: any = { debtId: debtIds };
 
   if (options.status) {
@@ -172,7 +160,7 @@ export const getPaymentHistory = async (
     where.paymentMethod = options.paymentMethod;
   }
 
-  // Get transactions
+  // get transactions
   const { count, rows: transactions } = await Transaction.findAndCountAll({
     where,
     include: [

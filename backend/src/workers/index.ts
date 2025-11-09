@@ -2,17 +2,14 @@ import { startDebtChecker, runDebtCheckerNow } from "./debtChecker.worker";
 import { startNagReminder, runNagReminderNow } from "./nagReminder.worker";
 import { logger } from "../utils/logger";
 
-/**
- * Start all workers
- */
 export const startAllWorkers = (): void => {
   try {
     logger.info("Starting all workers...");
 
-    // Start debt checker worker
+    // start debt checker worker
     startDebtChecker();
 
-    // Start nag reminder worker
+    // start nag reminder worker
     startNagReminder();
 
     logger.info("All workers started successfully");
@@ -22,16 +19,10 @@ export const startAllWorkers = (): void => {
   }
 };
 
-/**
- * Run debt checker manually (for testing)
- */
 export const triggerDebtChecker = async (): Promise<void> => {
   await runDebtCheckerNow();
 };
 
-/**
- * Run nag reminder manually (for testing)
- */
 export const triggerNagReminder = async (): Promise<void> => {
   await runNagReminderNow();
 };

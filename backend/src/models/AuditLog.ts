@@ -1,9 +1,6 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/database";
 
-/**
- * Audit Action Enum
- */
 export const AuditAction = {
   CREATED: "created",
   UPDATED: "updated",
@@ -11,9 +8,6 @@ export const AuditAction = {
   STATUS_CHANGED: "status_changed",
 } as const;
 
-/**
- * AuditLog Model - Functional approach
- */
 export const AuditLog = sequelize.define(
   "AuditLog",
   {
@@ -82,9 +76,7 @@ export const AuditLog = sequelize.define(
   },
 );
 
-/**
- * Helper function to create an audit log entry
- */
+// helper function to create an audit log entry
 export const createAuditLog = async (params: {
   userId: string;
   entityType: string;

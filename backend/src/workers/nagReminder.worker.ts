@@ -7,9 +7,7 @@ import { getModelData } from "../utils/sequelize-helpers";
 
 let isRunning = false;
 
-/**
- * Determine if a reminder should be sent based on nag sensitivity
- */
+// this determine if a reminder should be sent based on nag sensitivity
 const shouldSendReminder = (
   nagSensitivity: "low" | "medium" | "high",
   lastReminderDate: Date | undefined,
@@ -18,23 +16,21 @@ const shouldSendReminder = (
   const now = new Date();
   const intervalHours = CONSTANTS.NAG_INTERVALS[nagSensitivity];
 
-  // If no reminder has been sent yet, check against payment request date
+  // if no reminder has been sent yet, check against payment request date
   const referenceDate = lastReminderDate || paymentRequestDate;
   const hoursSinceLastContact =
     (now.getTime() - new Date(referenceDate).getTime()) / (1000 * 60 * 60);
 
-  // Send reminder if enough time has passed based on nag sensitivity
+  // Send reminder if enough time has passed
   return hoursSinceLastContact >= intervalHours;
 };
 
-/**
- * Process a single debt for reminder eligibility
- */
+// process a single debt for reminder eligibility
 const processDebtForReminder = async (debt: any): Promise<boolean> => {
   try {
     const debtData = getModelData(debt);
 
-    // Get debtor info (registered or non-registered)
+    // get debtor info (registered or non-registered)
     let debtorId: string | null = null;
     let nagSensitivity: "low" | "medium" | "high" = "medium";
 
@@ -43,11 +39,11 @@ const processDebtForReminder = async (debt: any): Promise<boolean> => {
       debtorId = debtor.id;
       nagSensitivity = debtor.nagSensitivity || "medium";
     } else {
-      // Non-registered user - use default medium sensitivity
+      // non-registered user - use default medium sensitivity
       nagSensitivity = "medium";
     }
 
-    // Get the last reminder sent for this debt
+    // get the last reminder sent for this debt
     const lastReminder = await Notification.findOne({
       where: {
         debtId: debtData.id,
@@ -59,7 +55,7 @@ const processDebtForReminder = async (debt: any): Promise<boolean> => {
 
     const lastReminderData = lastReminder ? getModelData(lastReminder) : null;
 
-    // Determine if we should send a reminder based on nag sensitivity
+    // determine if we should send a reminder based on nag sensitivity
     const shouldSend = shouldSendReminder(
       nagSensitivity,
       lastReminderData?.sentAt,
@@ -81,12 +77,10 @@ const processDebtForReminder = async (debt: any): Promise<boolean> => {
   }
 };
 
-/**
- * Check and send reminders for debts awaiting payment
- */
+// check and send reminders for debts awaiting payment
 const checkAndSendReminders = async (): Promise<void> => {
   try {
-    // Find all debts that are in payment_requested status (both registered and non-registered)
+    // find all debts that are in payment_requested status (both registered and non-registered)
     const pendingPaymentDebts = await Debt.findAll({
       where: {
         status: "payment_requested",
@@ -110,7 +104,7 @@ const checkAndSendReminders = async (): Promise<void> => {
       `Checking ${pendingPaymentDebts.length} debts for reminder eligibility`,
     );
 
-    // Process each debt and count reminders sent
+    // process each debt and count reminders sent
     const results = await Promise.all(
       pendingPaymentDebts.map(processDebtForReminder),
     );
@@ -126,9 +120,7 @@ const checkAndSendReminders = async (): Promise<void> => {
   }
 };
 
-/**
- * Job executor that runs the nag reminder worker
- */
+// job executor that runs the nag reminder worker
 const runNagReminder = async () => {
   if (isRunning) {
     logger.warn(
@@ -149,18 +141,13 @@ const runNagReminder = async () => {
   }
 };
 
-/**
- * Start the nag reminder worker
- */
+// start the nag reminder worker
 export const startNagReminder = (): void => {
-  // Run every hour at 15 minutes past the hour (offset from debt checker)
+  // run every hour at 15 minutes past the hour (offset from debt checker)
   cron.schedule("15 * * * *", runNagReminder);
   logger.info("Nag reminder worker scheduled successfully (runs every hour)");
 };
 
-/**
- * Manual trigger for testing
- */
 export const runNagReminderNow = async (): Promise<void> => {
   logger.info("Manually triggering nag reminder worker");
   await checkAndSendReminders();

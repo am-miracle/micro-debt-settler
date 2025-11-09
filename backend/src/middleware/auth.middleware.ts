@@ -16,7 +16,7 @@ export const authenticate = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    // Get token from header
+    // get token from header
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -26,10 +26,10 @@ export const authenticate = async (
 
     const token = authHeader.substring(7);
 
-    // Verify token
+    // verify token
     const decoded = jwt.verify(token, config.jwt.secret) as JwtPayload;
 
-    // Find user
+    // find user
     const user = await User.findByPk(decoded.userId, {
       attributes: { exclude: ["passwordHash"] },
     });
@@ -39,7 +39,7 @@ export const authenticate = async (
       return;
     }
 
-    // Attach user to request
+    // attach user to request
     req.user = user.toJSON();
     req.userId = user.id;
     next();
@@ -80,7 +80,7 @@ export const optionalAuth = async (
     next();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (_error) {
-    // For optional auth, we just continue without user
+    // for optional auth, we just continue without user
     next();
   }
 };

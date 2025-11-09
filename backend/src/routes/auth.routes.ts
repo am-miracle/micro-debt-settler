@@ -7,7 +7,6 @@ import { authRateLimit } from "../middleware/rateLimit.middleware";
 
 const router = Router();
 
-// Public routes
 router.post(
   "/register",
   authRateLimit,
@@ -26,7 +25,7 @@ router.post(
   authController.refreshToken,
 );
 
-// Protected routes
+// protected routes
 router.get("/me", authenticate, authController.me);
 router.post("/logout", authenticate, authController.logout);
 

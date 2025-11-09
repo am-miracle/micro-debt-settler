@@ -6,23 +6,20 @@ import { logger } from "./utils/logger";
 
 const startServer = async (): Promise<void> => {
   try {
-    // Connect to database
     await connectDatabase();
 
-    // Create Express app
+    // create express app
     const app = createApp();
 
-    // Start server
+    // start server
     const server = app.listen(config.port, () => {
       logger.info(`Server running on port ${config.port}`);
       logger.info(`Environment: ${config.env}`);
       logger.info(`API URL: ${config.app.url}/api/${config.apiVersion}`);
     });
 
-    // Start background workers
     startAllWorkers();
 
-    // Graceful shutdown
     const gracefulShutdown = async (signal: string) => {
       logger.info(`${signal} received. Starting graceful shutdown...`);
 
@@ -39,18 +36,15 @@ const startServer = async (): Promise<void> => {
         }
       });
 
-      // Force shutdown after 10 seconds
       setTimeout(() => {
         logger.error("Forced shutdown after timeout");
         process.exit(1);
-      }, 10000);
+      }, 10000); // 10 seconds
     };
 
-    // Handle shutdown signals
     process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
     process.on("SIGINT", () => gracefulShutdown("SIGINT"));
 
-    // Handle uncaught errors
     process.on("uncaughtException", (error) => {
       logger.error("Uncaught Exception:", error);
       gracefulShutdown("uncaughtException");
@@ -66,5 +60,4 @@ const startServer = async (): Promise<void> => {
   }
 };
 
-// Start the server
 startServer();

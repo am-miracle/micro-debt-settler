@@ -33,7 +33,7 @@ export const authValidators = {
 
 export const debtValidators = {
   create: [
-    // Either creditorId OR (creditorName/Email/Phone) must be provided
+    // ethier creditorId OR (creditorName/Email/Phone) must be provided
     body("creditorId")
       .optional()
       .isUUID()
@@ -53,7 +53,6 @@ export const debtValidators = {
       .isMobilePhone("any")
       .withMessage("Valid creditor phone is required"),
     body().custom((value) => {
-      // At least creditorId OR one of (creditorName, creditorEmail, creditorPhone) must exist
       if (
         !value.creditorId &&
         !value.creditorName &&
@@ -88,7 +87,7 @@ export const debtValidators = {
     body("calendarEventId").optional().isString(),
   ],
   createReceivable: [
-    // Either debtorId OR (debtorName/Email/Phone) must be provided
+    // either debtorId OR (debtorName/Email/Phone) must be provided
     body("debtorId")
       .optional()
       .isUUID()
@@ -108,7 +107,6 @@ export const debtValidators = {
       .isMobilePhone("any")
       .withMessage("Valid debtor phone is required"),
     body().custom((value) => {
-      // At least debtorId OR one of (debtorName, debtorEmail, debtorPhone) must exist
       if (
         !value.debtorId &&
         !value.debtorName &&

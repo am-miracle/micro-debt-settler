@@ -1,9 +1,6 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/database";
 
-/**
- * Transaction Enums
- */
 export const TransactionType = {
   PAYMENT: "payment",
   REFUND: "refund",
@@ -26,9 +23,6 @@ export const ProviderType = {
   PAYPAL: "paypal",
 } as const;
 
-/**
- * Transaction Model - Functional approach
- */
 export const Transaction = sequelize.define(
   "Transaction",
   {
@@ -58,7 +52,6 @@ export const Transaction = sequelize.define(
       onDelete: "SET NULL",
     },
 
-    // Transaction Details
     amount: {
       type: DataTypes.DECIMAL(15, 2),
       allowNull: false,
@@ -77,7 +70,6 @@ export const Transaction = sequelize.define(
       field: "transaction_type",
     },
 
-    // Payment Method
     providerType: {
       type: DataTypes.ENUM(...Object.values(ProviderType)),
       allowNull: false,
@@ -99,7 +91,6 @@ export const Transaction = sequelize.define(
       field: "provider_metadata",
     },
 
-    // Status
     status: {
       type: DataTypes.ENUM(...Object.values(TransactionStatus)),
       defaultValue: TransactionStatus.PENDING,
@@ -111,7 +102,6 @@ export const Transaction = sequelize.define(
       field: "failure_reason",
     },
 
-    // Bank Transfer Specific
     bankTransferReference: {
       type: DataTypes.STRING,
       allowNull: true,
@@ -123,7 +113,6 @@ export const Transaction = sequelize.define(
       field: "bank_transfer_proof_url",
     },
 
-    // Dates
     initiatedAt: {
       type: DataTypes.DATE,
       allowNull: false,

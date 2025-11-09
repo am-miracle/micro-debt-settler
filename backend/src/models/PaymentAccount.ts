@@ -1,9 +1,6 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/database";
 
-/**
- * PaymentAccount Model - Functional approach
- */
 export const PaymentAccount = sequelize.define(
   "PaymentAccount",
   {
@@ -40,7 +37,6 @@ export const PaymentAccount = sequelize.define(
       field: "is_primary",
     },
 
-    // Bank Transfer Details
     bankName: {
       type: DataTypes.STRING,
       allowNull: true,
@@ -57,7 +53,6 @@ export const PaymentAccount = sequelize.define(
       field: "account_name",
     },
 
-    // Payment Gateway Details
     providerCustomerId: {
       type: DataTypes.STRING,
       allowNull: true,

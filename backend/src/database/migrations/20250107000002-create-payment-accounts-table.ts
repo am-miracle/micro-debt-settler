@@ -1,11 +1,10 @@
-import { QueryInterface, DataTypes } from 'sequelize';
+import { QueryInterface, DataTypes } from "sequelize";
 
-/**
- * Migration: Create payment_accounts table
- */
-
-export async function up(queryInterface: QueryInterface, Sequelize: typeof DataTypes) {
-  await queryInterface.createTable('payment_accounts', {
+export async function up(
+  queryInterface: QueryInterface,
+  Sequelize: typeof DataTypes,
+) {
+  await queryInterface.createTable("payment_accounts", {
     id: {
       type: Sequelize.UUID,
       defaultValue: Sequelize.UUIDV4,
@@ -15,14 +14,20 @@ export async function up(queryInterface: QueryInterface, Sequelize: typeof DataT
       type: Sequelize.UUID,
       allowNull: false,
       references: {
-        model: 'users',
-        key: 'id',
+        model: "users",
+        key: "id",
       },
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE',
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     },
     provider_type: {
-      type: Sequelize.ENUM('bank_transfer', 'paystack', 'flutterwave', 'stripe', 'paypal'),
+      type: Sequelize.ENUM(
+        "bank_transfer",
+        "paystack",
+        "flutterwave",
+        "stripe",
+        "paypal",
+      ),
       allowNull: false,
     },
     is_primary: {
@@ -31,7 +36,7 @@ export async function up(queryInterface: QueryInterface, Sequelize: typeof DataT
       allowNull: false,
     },
 
-    // Bank Transfer Details
+    // bank transfer details
     bank_name: {
       type: Sequelize.STRING,
       allowNull: true,
@@ -45,7 +50,7 @@ export async function up(queryInterface: QueryInterface, Sequelize: typeof DataT
       allowNull: true,
     },
 
-    // Payment Gateway Details
+    // payment gateway details
     provider_customer_id: {
       type: Sequelize.STRING,
       allowNull: true,
@@ -71,12 +76,12 @@ export async function up(queryInterface: QueryInterface, Sequelize: typeof DataT
   });
 
   // Add indexes
-  await queryInterface.addIndex('payment_accounts', ['user_id']);
-  await queryInterface.addIndex('payment_accounts', ['user_id', 'is_primary']);
-  await queryInterface.addIndex('payment_accounts', ['provider_type']);
-  await queryInterface.addIndex('payment_accounts', ['is_active']);
+  await queryInterface.addIndex("payment_accounts", ["user_id"]);
+  await queryInterface.addIndex("payment_accounts", ["user_id", "is_primary"]);
+  await queryInterface.addIndex("payment_accounts", ["provider_type"]);
+  await queryInterface.addIndex("payment_accounts", ["is_active"]);
 }
 
 export async function down(queryInterface: QueryInterface) {
-  await queryInterface.dropTable('payment_accounts');
+  await queryInterface.dropTable("payment_accounts");
 }

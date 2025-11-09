@@ -1,11 +1,10 @@
-import { QueryInterface, DataTypes } from 'sequelize';
+import { QueryInterface, DataTypes } from "sequelize";
 
-/**
- * Migration: Create contacts table
- */
-
-export async function up(queryInterface: QueryInterface, Sequelize: typeof DataTypes) {
-  await queryInterface.createTable('contacts', {
+export async function up(
+  queryInterface: QueryInterface,
+  Sequelize: typeof DataTypes,
+) {
+  await queryInterface.createTable("contacts", {
     id: {
       type: Sequelize.UUID,
       defaultValue: Sequelize.UUIDV4,
@@ -15,24 +14,24 @@ export async function up(queryInterface: QueryInterface, Sequelize: typeof DataT
       type: Sequelize.UUID,
       allowNull: false,
       references: {
-        model: 'users',
-        key: 'id',
+        model: "users",
+        key: "id",
       },
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE',
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     },
     contact_user_id: {
       type: Sequelize.UUID,
       allowNull: true,
       references: {
-        model: 'users',
-        key: 'id',
+        model: "users",
+        key: "id",
       },
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE',
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     },
 
-    // Contact Info
+    // contact info
     email: {
       type: Sequelize.STRING,
       allowNull: false,
@@ -46,7 +45,7 @@ export async function up(queryInterface: QueryInterface, Sequelize: typeof DataT
       allowNull: true,
     },
 
-    // Metadata
+    // metadata
     nickname: {
       type: Sequelize.STRING,
       allowNull: true,
@@ -66,15 +65,15 @@ export async function up(queryInterface: QueryInterface, Sequelize: typeof DataT
     },
   });
 
-  // Add indexes
-  await queryInterface.addIndex('contacts', ['user_id']);
-  await queryInterface.addIndex('contacts', ['user_id', 'email'], {
+  // add indexes
+  await queryInterface.addIndex("contacts", ["user_id"]);
+  await queryInterface.addIndex("contacts", ["user_id", "email"], {
     unique: true,
-    name: 'unique_user_contact_email'
+    name: "unique_user_contact_email",
   });
-  await queryInterface.addIndex('contacts', ['contact_user_id']);
+  await queryInterface.addIndex("contacts", ["contact_user_id"]);
 }
 
 export async function down(queryInterface: QueryInterface) {
-  await queryInterface.dropTable('contacts');
+  await queryInterface.dropTable("contacts");
 }

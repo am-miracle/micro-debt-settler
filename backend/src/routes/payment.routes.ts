@@ -8,7 +8,6 @@ import express from "express";
 
 const router = Router();
 
-// Webhook routes (no authentication, raw body needed for signature verification)
 router.post(
   "/webhook/stripe",
   express.raw({ type: "application/json" }),
@@ -21,10 +20,8 @@ router.post(
   paymentController.handlePaystackWebhook,
 );
 
-// Protected payment routes
 router.use(authenticate);
 
-// Nigerian Payment Methods
 router.post(
   "/bank-transfer/:debtId",
   paymentRateLimit,
@@ -46,7 +43,6 @@ router.post(
   paymentController.initiateFlutterwavePayment,
 );
 
-// International Payment Methods
 router.post(
   "/stripe/:debtId",
   paymentRateLimit,

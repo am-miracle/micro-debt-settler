@@ -35,7 +35,6 @@ export const generateTokens = (userId: string, email: string): TokenPair => {
 };
 
 export const register = async (data: RegisterData) => {
-  // Check if user exists
   const existingUser = await User.findOne({ where: { email: data.email } });
   if (existingUser) {
     throw new AppError(CONSTANTS.ERRORS.EMAIL_EXISTS, 400);
@@ -44,16 +43,15 @@ export const register = async (data: RegisterData) => {
   // Create user
   const user = await User.create({
     email: data.email,
-    passwordHash: data.password, // Map password to passwordHash, will be hashed by hook
+    passwordHash: data.password, // map password to passwordHash, will be hashed by hook
     name: data.name,
     phone: data.phone,
     nagSensitivity: data.nagSensitivity || "medium",
   });
 
-  // Generate tokens
   const tokens = generateTokens(user.id, user.email);
 
-  // Remove password from response
+  // remove password from response
   const { passwordHash: _passwordHash, ...userWithoutPassword } = user.toJSON();
 
   return {
@@ -63,10 +61,8 @@ export const register = async (data: RegisterData) => {
 };
 
 export const login = async (data: LoginData) => {
-  // Find user
   const user = await User.findOne({ where: { email: data.email } });
   if (!user) {
-    // In development, provide specific error message
     const errorMessage =
       config.env === "development"
         ? "No account found with this email address"
@@ -74,10 +70,8 @@ export const login = async (data: LoginData) => {
     throw new AppError(errorMessage, 401);
   }
 
-  // Check password
   const isPasswordValid = await (user as any).comparePassword(data.password);
   if (!isPasswordValid) {
-    // In development, provide specific error message
     const errorMessage =
       config.env === "development"
         ? "Password is incorrect"
@@ -85,10 +79,8 @@ export const login = async (data: LoginData) => {
     throw new AppError(errorMessage, 401);
   }
 
-  // Generate tokens
   const tokens = generateTokens(user.id, user.email);
 
-  // Remove password from response
   const { passwordHash: _passwordHash2, ...userWithoutPassword } =
     user.toJSON();
 
@@ -105,13 +97,12 @@ export const refreshToken = async (refreshToken: string) => {
       email: string;
     };
 
-    // Check if user still exists
+    // check if user still exists
     const user = await User.findByPk(decoded.userId);
     if (!user) {
       throw new AppError(CONSTANTS.ERRORS.UNAUTHORIZED, 401);
     }
 
-    // Generate new tokens
     const tokens = generateTokens(user.id, user.email);
     return tokens;
   } catch {

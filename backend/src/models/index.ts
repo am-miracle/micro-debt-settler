@@ -7,9 +7,9 @@ import { Notification } from "./Notification";
 import { AuditLog } from "./AuditLog";
 import { WebhookEvent } from "./WebhookEvent";
 
-// Initialize all model associations
+// all model associations
 export const initializeAssociations = () => {
-  // User associations
+  // user associations
   User.hasMany(PaymentAccount, {
     foreignKey: "userId",
     as: "paymentAccounts",
@@ -46,7 +46,7 @@ export const initializeAssociations = () => {
     onDelete: "CASCADE",
   });
 
-  // PaymentAccount associations
+  // paymentAccount associations
   PaymentAccount.belongsTo(User, {
     foreignKey: "userId",
     as: "user",
@@ -58,7 +58,7 @@ export const initializeAssociations = () => {
     onDelete: "SET NULL",
   });
 
-  // Contact associations
+  // contact associations
   Contact.belongsTo(User, {
     foreignKey: "userId",
     as: "user",
@@ -69,7 +69,7 @@ export const initializeAssociations = () => {
     as: "contactUser",
   });
 
-  // Debt associations
+  // debt associations
   Debt.belongsTo(User, {
     foreignKey: "debtorId",
     as: "debtor",
@@ -92,7 +92,7 @@ export const initializeAssociations = () => {
     onDelete: "SET NULL",
   });
 
-  // Transaction associations
+  // transaction associations
   Transaction.belongsTo(Debt, {
     foreignKey: "debtId",
     as: "debt",
@@ -103,7 +103,7 @@ export const initializeAssociations = () => {
     as: "paymentAccount",
   });
 
-  // Notification associations
+  // notification associations
   Notification.belongsTo(User, {
     foreignKey: "userId",
     as: "user",
@@ -114,16 +114,13 @@ export const initializeAssociations = () => {
     as: "debt",
   });
 
-  // AuditLog associations
+  // auditLog associations
   AuditLog.belongsTo(User, {
     foreignKey: "userId",
     as: "user",
   });
-
-  // WebhookEvent has no associations (standalone table)
 };
 
-// Export all models
 export {
   User,
   PaymentAccount,
@@ -135,8 +132,7 @@ export {
   WebhookEvent,
 };
 
-// Export enums for convenience
-export { DebtStatus } from "./Debt";
+export { DebtStatus } from "../types";
 export {
   TransactionType,
   TransactionStatus,
@@ -149,7 +145,6 @@ export {
 } from "./Notification";
 export { AuditAction } from "./AuditLog";
 
-// Export helper functions
 export { hashPassword, comparePassword } from "./User";
 export { createAuditLog } from "./AuditLog";
 export { isWebhookProcessed, recordWebhookEvent } from "./WebhookEvent";

@@ -1,11 +1,10 @@
-import { QueryInterface, DataTypes } from 'sequelize';
+import { QueryInterface, DataTypes } from "sequelize";
 
-/**
- * Migration: Create transactions table
- */
-
-export async function up(queryInterface: QueryInterface, Sequelize: typeof DataTypes) {
-  await queryInterface.createTable('transactions', {
+export async function up(
+  queryInterface: QueryInterface,
+  Sequelize: typeof DataTypes,
+) {
+  await queryInterface.createTable("transactions", {
     id: {
       type: Sequelize.UUID,
       defaultValue: Sequelize.UUIDV4,
@@ -15,21 +14,21 @@ export async function up(queryInterface: QueryInterface, Sequelize: typeof DataT
       type: Sequelize.UUID,
       allowNull: false,
       references: {
-        model: 'debts',
-        key: 'id',
+        model: "debts",
+        key: "id",
       },
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE',
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     },
     payment_account_id: {
       type: Sequelize.UUID,
       allowNull: true,
       references: {
-        model: 'payment_accounts',
-        key: 'id',
+        model: "payment_accounts",
+        key: "id",
       },
-      onDelete: 'SET NULL',
-      onUpdate: 'CASCADE',
+      onDelete: "SET NULL",
+      onUpdate: "CASCADE",
     },
 
     // Transaction Details
@@ -42,14 +41,20 @@ export async function up(queryInterface: QueryInterface, Sequelize: typeof DataT
       allowNull: false,
     },
     transaction_type: {
-      type: Sequelize.ENUM('payment', 'refund', 'reversal'),
-      defaultValue: 'payment',
+      type: Sequelize.ENUM("payment", "refund", "reversal"),
+      defaultValue: "payment",
       allowNull: false,
     },
 
     // Payment Method
     provider_type: {
-      type: Sequelize.ENUM('bank_transfer', 'paystack', 'flutterwave', 'stripe', 'paypal'),
+      type: Sequelize.ENUM(
+        "bank_transfer",
+        "paystack",
+        "flutterwave",
+        "stripe",
+        "paypal",
+      ),
       allowNull: false,
     },
     provider_transaction_id: {
@@ -67,8 +72,14 @@ export async function up(queryInterface: QueryInterface, Sequelize: typeof DataT
 
     // Status
     status: {
-      type: Sequelize.ENUM('pending', 'processing', 'completed', 'failed', 'refunded'),
-      defaultValue: 'pending',
+      type: Sequelize.ENUM(
+        "pending",
+        "processing",
+        "completed",
+        "failed",
+        "refunded",
+      ),
+      defaultValue: "pending",
       allowNull: false,
     },
     failure_reason: {
@@ -112,12 +123,12 @@ export async function up(queryInterface: QueryInterface, Sequelize: typeof DataT
   });
 
   // Add indexes
-  await queryInterface.addIndex('transactions', ['debt_id']);
-  await queryInterface.addIndex('transactions', ['payment_account_id']);
-  await queryInterface.addIndex('transactions', ['provider_transaction_id']);
-  await queryInterface.addIndex('transactions', ['status']);
-  await queryInterface.addIndex('transactions', ['provider_type']);
-  await queryInterface.addIndex('transactions', ['created_at']);
+  await queryInterface.addIndex("transactions", ["debt_id"]);
+  await queryInterface.addIndex("transactions", ["payment_account_id"]);
+  await queryInterface.addIndex("transactions", ["provider_transaction_id"]);
+  await queryInterface.addIndex("transactions", ["status"]);
+  await queryInterface.addIndex("transactions", ["provider_type"]);
+  await queryInterface.addIndex("transactions", ["created_at"]);
 
   // Add check constraint
   await queryInterface.sequelize.query(`
@@ -128,5 +139,5 @@ export async function up(queryInterface: QueryInterface, Sequelize: typeof DataT
 }
 
 export async function down(queryInterface: QueryInterface) {
-  await queryInterface.dropTable('transactions');
+  await queryInterface.dropTable("transactions");
 }

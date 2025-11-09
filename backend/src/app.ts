@@ -11,7 +11,6 @@ import { logger } from "./utils/logger";
 export const createApp = (): Application => {
   const app = express();
 
-  // Security middleware
   app.use(helmet());
 
   // CORS configuration
@@ -22,17 +21,14 @@ export const createApp = (): Application => {
     }),
   );
 
-  // Body parsing middleware
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
-  // Initialize Passport
   app.use(passport.initialize());
 
-  // Rate limiting
   app.use(generalRateLimit);
 
-  // Request logging
+  // request logging
   app.use((req, _res, next) => {
     logger.info(`${req.method} ${req.path}`, {
       ip: req.ip,
@@ -41,10 +37,8 @@ export const createApp = (): Application => {
     next();
   });
 
-  // API routes
   app.use(`/api/${config.apiVersion}`, routes);
 
-  // Root endpoint
   app.get("/", (_req, res) => {
     res.json({
       success: true,
@@ -54,10 +48,8 @@ export const createApp = (): Application => {
     });
   });
 
-  // 404 handler
   app.use(notFoundHandler);
 
-  // Error handler (must be last)
   app.use(errorHandler);
 
   return app;

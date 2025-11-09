@@ -15,17 +15,16 @@ import {
   sendDebtCreatedNotification,
   sendCreditorDebtNotification,
 } from "./notification.service";
+import { logger } from "../utils/logger";
 
-/**
- * Create a debt where the logged-in user is the debtor (owes money)
- * Supports both registered users and non-registered creditors (personal reminders)
- */
+// create a debt where the logged-in user is the debtor (owes money)
+// supports both registered users and non-registered creditors (personal reminders)
 export const createDebt = async (debtorId: string, data: CreateDebtDTO) => {
   let isPersonalReminder = false;
 
-  // Check if this is a debt to a registered user or a personal reminder
+  // check if this is a debt to a registered user or a personal reminder
   if (data.creditorId) {
-    // Registered user debt
+    // registered user debt
     const creditor = await User.findByPk(data.creditorId);
     if (!creditor) {
       throw new AppError("Creditor not found", 404);
@@ -35,7 +34,7 @@ export const createDebt = async (debtorId: string, data: CreateDebtDTO) => {
       throw new AppError("Cannot create debt to yourself", 400);
     }
   } else {
-    // Personal reminder - must have at least creditor name or email or phone
+    // personal reminder - must have at least creditor name or email or phone
     if (!data.creditorName && !data.creditorEmail && !data.creditorPhone) {
       throw new AppError(
         "For personal reminders, provide at least creditor name, email, or phone",
@@ -69,32 +68,29 @@ export const createDebt = async (debtorId: string, data: CreateDebtDTO) => {
     calendarEventId: data.calendarEventId,
   });
 
-  // Send notification to creditor (registered or non-registered)
+  // send notification to creditor (registered or non-registered)
   const debtData = getModelData(debt);
   if (data.creditorId || data.creditorEmail || data.creditorPhone) {
-    // For debts YOU owe, notify the creditor that you've acknowledged the debt
+    // For debts I owe, notify the creditor that i've acknowledged the debt
     sendCreditorDebtNotification(debtData.id).catch((error) => {
-      // Log error but don't fail debt creation
-      console.error("Failed to send creditor notification:", error);
+      logger.error("Failed to send creditor notification:", error);
     });
   }
 
   return debt;
 };
 
-/**
- * Create a debt where the logged-in user is the creditor (is owed money)
- * Supports both registered users and non-registered debtors (receivable reminders)
- */
+// create a debt where the logged-in user is the creditor (is owed money)
+// supports both registered users and non-registered debtors (receivable reminders)
 export const createReceivableDebt = async (
   creditorId: string,
   data: CreateReceivableDebtDTO,
 ) => {
   let isPersonalReminder = false;
 
-  // Check if this is a debt from a registered user or a personal reminder
+  // check if this is a debt from a registered user
   if (data.debtorId) {
-    // Registered user debt
+    // registered user debt
     const debtor = await User.findByPk(data.debtorId);
     if (!debtor) {
       throw new AppError("Debtor not found", 404);
@@ -104,7 +100,7 @@ export const createReceivableDebt = async (
       throw new AppError("Cannot create debt to yourself", 400);
     }
   } else {
-    // Personal reminder - must have at least debtor name or email or phone
+    // personal reminder - must have at least debtor name or email or phone
     if (!data.debtorName && !data.debtorEmail && !data.debtorPhone) {
       throw new AppError(
         "For personal reminders, provide at least debtor name, email, or phone",
@@ -138,12 +134,12 @@ export const createReceivableDebt = async (
     calendarEventId: data.calendarEventId,
   });
 
-  // Send notification to debtor (registered or non-registered)
+  // send notification to debtor (registered or non-registered)
   const debtData = getModelData(debt);
   if (data.debtorId || data.debtorEmail || data.debtorPhone) {
     sendDebtCreatedNotification(debtData.id).catch((error) => {
-      // Log error but don't fail debt creation
-      console.error("Failed to send debt notification:", error);
+      // log error but don't fail debt creation
+      logger.error("Failed to send debt notification:", error);
     });
   }
 

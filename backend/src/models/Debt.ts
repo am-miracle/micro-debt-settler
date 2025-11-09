@@ -1,22 +1,7 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/database";
+import { DebtStatus } from "../types";
 
-/**
- * Debt Status Enum
- */
-export const DebtStatus = {
-  PENDING: "pending",
-  PAYMENT_REQUESTED: "payment_requested",
-  PAID: "paid",
-  CONFIRMED: "confirmed",
-  SETTLED: "settled",
-  DISPUTED: "disputed",
-  CANCELLED: "cancelled",
-} as const;
-
-/**
- * Debt Model - Functional approach
- */
 export const Debt = sequelize.define(
   "Debt",
   {
@@ -36,7 +21,7 @@ export const Debt = sequelize.define(
       onDelete: "CASCADE",
     },
 
-    // Non-registered debtor info (for receivable debt reminders)
+    // non-registered debtor info (for receivable debt reminders)
     debtorName: {
       type: DataTypes.STRING,
       allowNull: true,
@@ -63,7 +48,7 @@ export const Debt = sequelize.define(
       onDelete: "CASCADE",
     },
 
-    // Non-registered creditor info (for personal reminders)
+    // non-registered creditor info (for personal reminders)
     creditorName: {
       type: DataTypes.STRING,
       allowNull: true,
@@ -86,7 +71,7 @@ export const Debt = sequelize.define(
       field: "is_personal_reminder",
     },
 
-    // Payment Method
+    // payment Method
     paymentMethod: {
       type: DataTypes.ENUM(
         "bank_transfer",
@@ -100,7 +85,7 @@ export const Debt = sequelize.define(
       field: "payment_method",
     },
 
-    // Bank Transfer Details (for bank_transfer payment method)
+    // bank transfer details (for bank_transfer payment method)
     bankName: {
       type: DataTypes.STRING,
       allowNull: true,
@@ -117,7 +102,6 @@ export const Debt = sequelize.define(
       field: "account_number",
     },
 
-    // Amounts
     amount: {
       type: DataTypes.DECIMAL(15, 2),
       allowNull: false,
@@ -135,14 +119,12 @@ export const Debt = sequelize.define(
       allowNull: false,
     },
 
-    // Status
     status: {
       type: DataTypes.ENUM(...Object.values(DebtStatus)),
       defaultValue: DebtStatus.PENDING,
       allowNull: false,
     },
 
-    // Dates
     dueDate: {
       type: DataTypes.DATE,
       allowNull: false,
@@ -164,7 +146,7 @@ export const Debt = sequelize.define(
       field: "settled_at",
     },
 
-    // External Integration
+    // external integration
     calendarEventId: {
       type: DataTypes.STRING,
       allowNull: true,
@@ -176,7 +158,6 @@ export const Debt = sequelize.define(
       field: "receipt_url",
     },
 
-    // Tracking
     paymentReference: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -219,7 +200,7 @@ export const Debt = sequelize.define(
         }
       },
       hasCreditorInfo(this: any) {
-        // Either creditorId OR (creditorName/Email/Phone) must be provided
+        // either creditorId or (creditorName/email/phone) must be provided
         if (
           !this.creditorId &&
           !this.creditorName &&
@@ -232,7 +213,7 @@ export const Debt = sequelize.define(
         }
       },
       hasDebtorInfo(this: any) {
-        // Either debtorId OR (debtorName/Email/Phone) must be provided
+        // either debtorId OR (debtorName/email/phone) must be provided
         if (
           !this.debtorId &&
           !this.debtorName &&
@@ -247,7 +228,7 @@ export const Debt = sequelize.define(
     },
     hooks: {
       beforeValidate: (debt: any) => {
-        // Generate payment reference if not provided
+        // generate payment reference if not provided
         if (!debt.paymentReference) {
           const timestamp = Date.now();
           const random = Math.floor(Math.random() * 10000);

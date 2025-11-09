@@ -1,9 +1,6 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/database";
 
-/**
- * Notification Enums
- */
 export const NotificationType = {
   DEBT_CREATED: "debt_created",
   DEBT_ACKNOWLEDGED: "debt_acknowledged",
@@ -32,9 +29,6 @@ export const NotificationStatus = {
   READ: "read",
 } as const;
 
-/**
- * Notification Model - Functional approach
- */
 export const Notification = sequelize.define(
   "Notification",
   {
@@ -45,7 +39,7 @@ export const Notification = sequelize.define(
     },
     userId: {
       type: DataTypes.UUID,
-      allowNull: true, // Allow null for non-registered users
+      allowNull: true, // allow null for non-registered users
       field: "user_id",
       references: {
         model: "users",
@@ -79,7 +73,6 @@ export const Notification = sequelize.define(
       onDelete: "SET NULL",
     },
 
-    // Notification Details
     type: {
       type: DataTypes.ENUM(...Object.values(NotificationType)),
       allowNull: false,
@@ -97,7 +90,6 @@ export const Notification = sequelize.define(
       allowNull: false,
     },
 
-    // Delivery Status
     status: {
       type: DataTypes.ENUM(...Object.values(NotificationStatus)),
       defaultValue: NotificationStatus.PENDING,
@@ -129,7 +121,6 @@ export const Notification = sequelize.define(
       field: "failure_reason",
     },
 
-    // Provider Details
     provider: {
       type: DataTypes.STRING,
       allowNull: true,

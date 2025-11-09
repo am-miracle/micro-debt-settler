@@ -6,14 +6,12 @@ import { Op } from "sequelize";
 
 let isRunning = false;
 
-/**
- * Check and process overdue debts
- */
+// this check and process overdue debts
 const checkAndProcessDebts = async (): Promise<void> => {
   try {
     const now = new Date();
 
-    // Find all pending debts that have passed their due date
+    // find all pending debts that have passed their due date
     const overdueDebts = await Debt.findAll({
       where: {
         status: "pending",
@@ -30,13 +28,12 @@ const checkAndProcessDebts = async (): Promise<void> => {
 
     logger.info(`Found ${overdueDebts.length} overdue debts to process`);
 
-    // Process each debt
     const processDebt = async (debt: any) => {
       try {
-        // Send payment request notification
+        // send payment request notification
         await sendPaymentRequest(debt.id);
 
-        // Update status to payment_requested and timestamp
+        // update status to payment_requested and timestamp
         await debt.update({
           status: "payment_requested",
           paymentRequestedAt: new Date(),
@@ -57,9 +54,7 @@ const checkAndProcessDebts = async (): Promise<void> => {
   }
 };
 
-/**
- * Job executor that runs the debt checker
- */
+// job executor that runs the debt checker
 const runDebtChecker = async () => {
   if (isRunning) {
     logger.warn("Debt checker is already running, skipping this iteration");
@@ -78,18 +73,12 @@ const runDebtChecker = async () => {
   }
 };
 
-/**
- * Start the debt checker worker
- */
+// start the debt checker worker
 export const startDebtChecker = (): void => {
-  // Run every hour at the top of the hour
   cron.schedule("0 * * * *", runDebtChecker);
   logger.info("Debt checker worker scheduled successfully (runs every hour)");
 };
 
-/**
- * Manual trigger for testing
- */
 export const runDebtCheckerNow = async (): Promise<void> => {
   logger.info("Manually triggering debt checker");
   await checkAndProcessDebts();

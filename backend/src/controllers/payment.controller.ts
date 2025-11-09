@@ -6,10 +6,8 @@ import { config } from "../config/env";
 import Stripe from "stripe";
 import crypto from "crypto";
 
-/**
- * Initiate bank transfer payment (Nigerian banks)
- * Returns bank account details for manual transfer
- */
+// bank transfer payment (Nigerian banks)
+// returns bank account details for manual transfer
 export const initiateBankTransfer = async (
   req: Request,
   res: Response,
@@ -30,9 +28,7 @@ export const initiateBankTransfer = async (
   }
 };
 
-/**
- * Initiate Paystack payment (Nigeria)
- */
+// Paystack payment (Nigeria)
 export const initiatePaystackPayment = async (
   req: Request,
   res: Response,
@@ -49,9 +45,7 @@ export const initiatePaystackPayment = async (
   }
 };
 
-/**
- * Initiate Flutterwave payment (Nigeria & Africa)
- */
+// Flutterwave payment (Nigeria and Africa)
 export const initiateFlutterwavePayment = async (
   req: Request,
   res: Response,
@@ -68,9 +62,7 @@ export const initiateFlutterwavePayment = async (
   }
 };
 
-/**
- * Initiate Stripe payment (International)
- */
+// Stripe payment (International)
 export const initiateStripePayment = async (
   req: Request,
   res: Response,
@@ -87,9 +79,7 @@ export const initiateStripePayment = async (
   }
 };
 
-/**
- * Initiate PayPal payment (International)
- */
+// PayPal payment (International)
 export const initiatePayPalPayment = async (
   req: Request,
   res: Response,
@@ -106,9 +96,7 @@ export const initiatePayPalPayment = async (
   }
 };
 
-/**
- * Capture PayPal payment after approval
- */
+// Capture PayPal payment after approval
 export const capturePayPalPayment = async (
   req: Request,
   res: Response,
@@ -125,10 +113,8 @@ export const capturePayPalPayment = async (
   }
 };
 
-/**
- * Record manual payment confirmation
- * Used when payment is done outside the app
- */
+// record manual payment confirmation
+// used when payment is done outside the app
 export const recordManualPayment = async (
   req: Request,
   res: Response,
@@ -146,9 +132,7 @@ export const recordManualPayment = async (
   }
 };
 
-/**
- * Handle Stripe webhook
- */
+// handle Stripe webhook
 export const handleStripeWebhook = async (
   req: Request,
   res: Response,
@@ -185,9 +169,7 @@ export const handleStripeWebhook = async (
   }
 };
 
-/**
- * Handle Paystack webhook
- */
+// handle Paystack webhook
 export const handlePaystackWebhook = async (
   req: Request,
   res: Response,
@@ -197,7 +179,7 @@ export const handlePaystackWebhook = async (
     const hash = req.headers["x-paystack-signature"] as string;
     const secret = config.paystack.secretKey;
 
-    // Verify Paystack signature
+    // verify Paystack signature
     const expectedHash = crypto
       .createHmac("sha512", secret)
       .update(JSON.stringify(req.body))

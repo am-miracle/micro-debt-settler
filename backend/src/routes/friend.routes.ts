@@ -6,7 +6,6 @@ import { friendValidators } from "../utils/validators";
 
 const router = Router();
 
-// All friend routes require authentication
 router.use(authenticate);
 
 router.post("/", validate(friendValidators.add), friendController.addFriend);

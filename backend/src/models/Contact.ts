@@ -1,10 +1,8 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/database";
 
-/**
- * Contact Model - Functional approach
- * Supports both registered and non-registered users
- */
+// contact model
+// supports both registered and non-registered users
 export const Contact = sequelize.define(
   "Contact",
   {
@@ -34,7 +32,7 @@ export const Contact = sequelize.define(
       onDelete: "CASCADE",
     },
 
-    // Contact Info (for non-registered users or cached data)
+    // contact info (for non-registered users or cached data)
     email: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -51,7 +49,7 @@ export const Contact = sequelize.define(
       allowNull: true,
     },
 
-    // Metadata
+    // metadata
     nickname: {
       type: DataTypes.STRING,
       allowNull: true,

@@ -6,10 +6,9 @@ import { debtValidators } from "../utils/validators";
 
 const router = Router();
 
-// All debt routes require authentication
+// all debt routes require authentication
 router.use(authenticate);
 
-// Create debts
 router.post("/", validate(debtValidators.create), debtController.createDebt);
 router.post(
   "/receivable",
@@ -17,7 +16,6 @@ router.post(
   debtController.createReceivableDebt,
 );
 
-// Get debts
 router.get("/summary", debtController.getDebtSummary);
 router.get(
   "/direction/:direction",
@@ -27,7 +25,6 @@ router.get(
 router.get("/", validate(debtValidators.getDebts), debtController.getDebts);
 router.get("/:id", validate(debtValidators.getById), debtController.getDebt);
 
-// Update/Delete debts
 router.patch(
   "/:id",
   validate(debtValidators.update),

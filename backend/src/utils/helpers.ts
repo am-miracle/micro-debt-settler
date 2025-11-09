@@ -9,7 +9,6 @@ interface PaginationInfo {
   hasPrev: boolean;
 }
 
-// API Response helpers
 export const ApiResponse = {
   success: (
     res: Response,

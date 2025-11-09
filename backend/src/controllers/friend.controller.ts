@@ -4,10 +4,8 @@ import { ApiResponse } from "../utils/helpers";
 import { CONSTANTS } from "../utils/constants";
 import { AppError } from "../middleware/error.middleware";
 
-/**
- * Add a contact (friend)
- * Supports both registered and non-registered users
- */
+// add a contact (friend)
+// this support both registered and non-registered users
 export const addFriend = async (
   req: Request,
   res: Response,
@@ -17,7 +15,7 @@ export const addFriend = async (
     const { friendEmail, friendName, friendPhone, nickname, notes } = req.body;
     const userId = req.userId!;
 
-    // Check if contact already exists
+    // check if contact already exists
     const existingContact = await Contact.findOne({
       where: { userId, email: friendEmail },
     });
@@ -26,13 +24,13 @@ export const addFriend = async (
       throw new AppError("Contact already exists", 400);
     }
 
-    // Check if the email belongs to a registered user
+    // check if the email belongs to a registered user
     const registeredUser = await User.findOne({
       where: { email: friendEmail },
       attributes: ["id", "name", "phone"],
     });
 
-    // Create contact
+    // create contact
     const contact = await Contact.create({
       userId,
       contactUserId: registeredUser ? (registeredUser as any).id : null,
@@ -52,9 +50,7 @@ export const addFriend = async (
   }
 };
 
-/**
- * Get all contacts (friends)
- */
+// get all contacts (friends)
 export const getFriends = async (
   req: Request,
   res: Response,
@@ -81,9 +77,6 @@ export const getFriends = async (
   }
 };
 
-/**
- * Get a specific contact
- */
 export const getFriend = async (
   req: Request,
   res: Response,
@@ -114,9 +107,6 @@ export const getFriend = async (
   }
 };
 
-/**
- * Update a contact
- */
 export const updateFriend = async (
   req: Request,
   res: Response,
@@ -135,7 +125,7 @@ export const updateFriend = async (
       throw new AppError(CONSTANTS.ERRORS.FRIEND_NOT_FOUND, 404);
     }
 
-    // Only update fields that are not linked to a registered user
+    // only update fields that are not linked to a registered user
     // or allow nickname/notes to always be updated
     await (contact as any).update({
       ...(!(contact as any).contactUserId &&
@@ -152,9 +142,6 @@ export const updateFriend = async (
   }
 };
 
-/**
- * Delete a contact
- */
 export const deleteFriend = async (
   req: Request,
   res: Response,
@@ -180,9 +167,7 @@ export const deleteFriend = async (
   }
 };
 
-/**
- * Search for a user by email
- */
+// search for a user by email (only for registered user)
 export const searchUserByEmail = async (
   req: Request,
   res: Response,
