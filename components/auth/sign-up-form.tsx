@@ -43,7 +43,7 @@ export default function RHFForm() {
                 placeholder="Enter your name"
                 value={value}
                 onChangeText={onChange}
-                className="border-[0.8px] border-gray-200 rounded-xl px-[12px] py-2.5 text-sm font-normal text-gray-150"
+                className="border-[0.8px] border-gray-200 rounded-xl px-[12px] py-2.5 text-sm font-normal text-gray-150  h-12 flex flex-row items-center"
               />
             )}
           />
@@ -62,7 +62,7 @@ export default function RHFForm() {
                 placeholder="Enter your email"
                 value={value}
                 onChangeText={onChange}
-                className="border-[0.8px] border-gray-200 rounded-xl px-[12px] py-2.5 text-sm font-normal text-gray-150"
+                className="border-[0.8px] border-gray-200 rounded-xl px-[12px] py-2.5 text-sm font-normal text-gray-150  h-12 flex flex-row items-center"
                 keyboardType="email-address"
                 autoCapitalize="none"
               />
@@ -84,7 +84,7 @@ export default function RHFForm() {
                 value={value?.toString()}
                 onChangeText={(text) => onChange(Number(text))}
                 keyboardType="phone-pad"
-                className="border-[0.8px] border-gray-200 rounded-xl px-[12px] py-2.5 text-sm font-normal text-gray-150"
+                className="border-[0.8px] border-gray-200 rounded-xl px-[12px] py-2.5 text-sm font-normal text-gray-150  h-12 flex flex-row items-center"
               />
             )}
           />
@@ -106,7 +106,7 @@ export default function RHFForm() {
                 secureTextEntry
                 autoCapitalize="none"
                 textContentType="password"
-                className="border-[0.8px] border-gray-200 rounded-xl px-[12px] py-2.5 text-sm font-normal text-gray-150"
+                className="border-[0.8px] border-gray-200 rounded-xl px-[12px] py-2.5 text-sm font-normal text-gray-150 h-12 flex flex-row items-center"
               />
             )}
           />
@@ -129,7 +129,7 @@ export default function RHFForm() {
         </TouchableOpacity>
 
         <Text className="text-xs font-normal text-gray-100 tracking-tight">
-          Already have an account? 
+          Already have an account? {" "}
           <Pressable onPress={() => router.push("/login")}>
             <Text className="underline text-primary">Log in</Text>
           </Pressable>
