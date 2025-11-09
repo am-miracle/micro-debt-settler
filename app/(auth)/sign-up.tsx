@@ -3,7 +3,7 @@ import ScreenWrapper from "@/components/screen-wrapper";
 import React from "react";
 import { ScrollView, Text, View } from "react-native";
 
-export default function SignUp() {
+export default function SignUpScreen() {
   return (
     <ScreenWrapper>
       <ScrollView className="px-5 py-12">
