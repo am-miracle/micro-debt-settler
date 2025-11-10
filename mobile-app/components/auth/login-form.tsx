@@ -108,7 +108,7 @@ export default function LoginForm() {
       <TouchableOpacity
         onPress={handleSubmit(onSubmit)}
         disabled={!isFormValid}
-        className={`w-full rounded-full h-12 flex flex-row items-center justify-center gap-x-2 custom-shadow ${
+        className={`w-full rounded-full h-12 flex flex-row items-center justify-center gap-x-2 shadow-custom ${
           isFormValid ? "bg-primary" : "bg-primary/50"
         }`}
       >

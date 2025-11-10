@@ -23,6 +23,10 @@ module.exports = {
         "roboto-medium": ["RobotoMedium"],
         "roboto-bold": ["RobotoBold"],
       },
+      boxShadow: {
+        custom: "0px 1px 2px 0px rgba(16, 24, 40, 0.05)",
+        nav: "0px 4px 25px rgba(0,0,0,0.17)",
+      },
     },
   },
   plugins: [],
