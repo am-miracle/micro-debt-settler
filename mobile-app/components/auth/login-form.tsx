@@ -13,14 +13,21 @@ import {
 import FormSeparator from "../ui/separator";
 import GoogleSignup from "./google-signup";
 import ConnectBank from "./connect-bank";
+import EyesCloseIcon from "../icons/eye-close";
+import EyesIcon from "../icons/eye";
 
 export default function LoginForm() {
   const { control, handleSubmit, watch } = useForm<FormData>();
   const [checked, setChecked] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
     console.log("Form Data:", data);
+  };
+
+  const handleShowPassword = () => {
+    setShowPassword((prev) => !prev);
   };
 
   // Watch required fields
@@ -44,7 +51,7 @@ export default function LoginForm() {
               placeholder="Enter your email"
               value={value}
               onChangeText={onChange}
-              className="border-[0.8px] border-gray-200 rounded-md px-[12px] py-2.5 text-sm font-normal font-roboto text-gray-150 h-12 flex items-center"
+              className="border-[0.8px] border-gray-200 rounded-lg px-[12px] py-2.5 text-sm font-normal font-roboto text-gray-150 h-12 flex items-center"
               keyboardType="email-address"
               autoCapitalize="none"
             />
@@ -57,22 +64,26 @@ export default function LoginForm() {
         <Text className="text-black-200 text-base leading-[22px] font-normal">
           Password
         </Text>
-    
-        <Controller
-          control={control}
-          name="password"
-          render={({ field: { onChange, value } }) => (
-            <TextInput
-              placeholder="Enter Password"
-              value={value}
-              onChangeText={onChange}
-              secureTextEntry
-              autoCapitalize="none"
-              textContentType="password"
-              className="border-[0.8px] border-gray-200 rounded-md px-[12px] py-2.5 text-sm font-normal font-roboto text-gray-150 h-12 flex items-center"
-            />
-          )}
-        />
+
+        <View className="h-12 flex items-center gap-x-2 flex-row border-[0.8px] border-gray-200 rounded-lg px-[12px] py-2.5 ">
+          <Controller
+            control={control}
+            name="password"
+            render={({ field: { onChange, value } }) => (
+              <TextInput
+                placeholder="Enter Password"
+                value={value}
+                onChangeText={onChange}
+                autoCapitalize="none"
+                secureTextEntry={!showPassword}
+                className="text-sm font-normal font-roboto text-gray-150 w-full"
+              />
+            )}
+          />
+          <Pressable onPress={handleShowPassword} className="flex shrink-0">
+            {showPassword ? <EyesIcon /> : <EyesCloseIcon />}
+          </Pressable>
+        </View>
       </View>
 
       {/* Remember me & Forgot Password */}

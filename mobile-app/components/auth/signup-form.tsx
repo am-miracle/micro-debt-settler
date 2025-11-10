@@ -44,7 +44,7 @@ export default function SignUpForm() {
                 placeholder="Enter your name"
                 value={value}
                 onChangeText={onChange}
-                className="border-[0.8px] border-gray-200 rounded-md px-[12px] py-2.5 text-sm font-normal font-roboto text-gray-150 h-12 flex items-center"
+                className="border-[0.8px] border-gray-200 rounded-lg px-[12px] py-2.5 text-sm font-normal font-roboto text-gray-150 h-12 flex items-center"
               />
             )}
           />
@@ -63,7 +63,7 @@ export default function SignUpForm() {
                 placeholder="Enter your email"
                 value={value}
                 onChangeText={onChange}
-                className="border-[0.8px] border-gray-200 rounded-md px-[12px] py-2.5 text-sm font-normal font-roboto text-gray-150 h-12 flex items-center"
+                className="border-[0.8px] border-gray-200 rounded-lg px-[12px] py-2.5 text-sm font-normal font-roboto text-gray-150 h-12 flex items-center"
                 keyboardType="email-address"
                 autoCapitalize="none"
               />
@@ -85,7 +85,7 @@ export default function SignUpForm() {
                 value={value?.toString()}
                 onChangeText={onChange}
                 keyboardType="phone-pad"
-                className="border-[0.8px] border-gray-200 rounded-md px-[12px] py-2.5 text-sm font-normal font-roboto text-gray-150 h-12 flex items-center"
+                className="border-[0.8px] border-gray-200 rounded-lg px-[12px] py-2.5 text-sm font-normal font-roboto text-gray-150 h-12 flex items-center"
               />
             )}
           />
@@ -107,7 +107,7 @@ export default function SignUpForm() {
                 secureTextEntry
                 autoCapitalize="none"
                 textContentType="password"
-                className="border-[0.8px] border-gray-200 rounded-md px-[12px] py-2.5 text-sm font-normal font-roboto text-gray-150 h-12 flex items-center"
+                className="border-[0.8px] border-gray-200 rounded-lg px-[12px] py-2.5 text-sm font-normal font-roboto text-gray-150 h-12 flex items-center"
               />
             )}
           />
