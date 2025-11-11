@@ -1,5 +1,4 @@
-import ScreenWrapper from "@/components/screen-wrapper";
-import FloatingNav from "@/components/ui/floating-nav";
+import HomeHeader from "@/components/home/header";
 import { ScrollView, View } from "react-native";
 
 export default function HomeScreen() {
@@ -9,10 +8,8 @@ export default function HomeScreen() {
         className="px-5 py-12"
         contentContainerClassName="pb-24"
       >
-        <View className="h-screen">1</View>
+        <HomeHeader/>
       </ScrollView>
-
-      <FloatingNav />
     </View>
   );
 }
