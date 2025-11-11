@@ -1,7 +1,6 @@
 import * as React from "react";
-import { SvgProps } from "react-native-svg";
 
-const HomeIcon = ({color = "#00BFA6"}) => (
+const HomeIcon = ({ color = "#00BFA6" }) => (
   <svg
     width="24"
     height="24"

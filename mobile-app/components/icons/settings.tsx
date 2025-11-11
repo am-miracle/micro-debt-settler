@@ -1,5 +1,4 @@
 import * as React from "react";
-import { SvgProps } from "react-native-svg";
 
 const SettingIcon = ({ color = "#00BFA6" }) => (
   <svg
