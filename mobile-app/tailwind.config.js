@@ -7,14 +7,22 @@ module.exports = {
     extend: {
       colors: {
         primary: "#00BFA6",
+        accent: "#D2FDF7",
+        success: "#1D9C56",
         black: {
           100: "#282828",
           150: "#1B1B1B",
+          180: "#121212",
           200: "#3D3D3D",
+        },
+        green: {
+          100: "#F2FFF7",
         },
         gray: {
           100: "#5C5C5C",
           150: "#E0E0E0",
+          200: "#8B8B8B",
+          250: "#8C8C8C",
           700: "#414651",
         },
       },
@@ -22,6 +30,10 @@ module.exports = {
         roboto: ["RobotoRegular"],
         "roboto-medium": ["RobotoMedium"],
         "roboto-bold": ["RobotoBold"],
+      },
+      boxShadow: {
+        custom: "0px 1px 2px 0px rgba(16, 24, 40, 0.05)",
+        nav: "0px 4px 25px rgba(0,0,0,0.17)",
       },
     },
   },
